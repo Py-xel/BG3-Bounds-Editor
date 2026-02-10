@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- #region BUTTON STYLES -->
 
-    <!-- BUTTON.BASE -->
+    <!-- Button.Base -->
     <Style x:Key="Button.Base" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="White"/>
@@ -17,7 +17,7 @@
         </Setter>
     </Style>
 
-    <!-- BUTTON.MINIMIZE -->
+    <!-- Button.Minimize -->
     <Style x:Key="Button.Minimize" TargetType="Button" BasedOn="{StaticResource Button.Base}">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -26,7 +26,7 @@
         </Style.Triggers>
     </Style>
 
-    <!-- BUTTON.CLOSE -->
+    <!-- Button.Close -->
     <Style x:Key="Button.Close" TargetType="Button" BasedOn="{StaticResource Button.Base}">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -98,7 +98,7 @@
                         <ToggleButton Background="Transparent" BorderThickness="0" IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Focusable="False">
                             <ToggleButton.Template>
                                 <ControlTemplate TargetType="ToggleButton">
-                                    <Border Background="Transparent">
+                                    <Border x:Name="ComboBoxHover" Background="Transparent" CornerRadius="4">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition />
@@ -107,6 +107,11 @@
                                             <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="ComboBoxHover" Property="Background" Value="#FF4E4E52"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </ToggleButton.Template>
                         </ToggleButton>
