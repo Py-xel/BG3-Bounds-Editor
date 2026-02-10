@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>bg3_bounds_editor_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -16,13 +17,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="bg3_bounds_editor_logo.ico" />
-    <None Remove="bg3_bounds_editor_logo.png" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Content Include="bg3_bounds_editor_logo.ico" />
     <Resource Include="bg3_bounds_editor_logo.ico" />
     <Resource Include="bg3_bounds_editor_logo.png" />
   </ItemGroup>
-
+  
 </Project>
