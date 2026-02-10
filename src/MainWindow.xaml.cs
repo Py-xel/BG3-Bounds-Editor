@@ -48,18 +48,25 @@ public partial class MainWindow : Window
             ProjectComboBox.Items.Clear();
 
             string publicPath = Path.Combine(mainPath, "Public");
+
             if (!Directory.Exists(publicPath))
+            {
+                MessageBox.Show(
+                    $"The required folder could not be found:\n\n{publicPath}\n\n" + "Make sure you have selected the correct Data folder!", "Required Folder Not Found", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
 
             var subDirectories = Directory.GetDirectories(publicPath)
-                .Where(dir => !ExcludedFolders.Contains(Path.GetFileName(dir)));
+                .Select(dir => Path.GetFileName(dir))
+                .Where(folderName => !ExcludedFolders.Contains(folderName))
+                .OrderBy(folderName => folderName); // optional: sort alphabetically
 
-            foreach (string dir in subDirectories)
+            foreach (string folderName in subDirectories)
             {
-                string folderName = Path.GetFileName(dir);
                 ProjectComboBox.Items.Add(folderName);
             }
 
+            // Restore last selected project
             if (!string.IsNullOrEmpty(lastSelectedProject) &&
                 ProjectComboBox.Items.Contains(lastSelectedProject))
             {
@@ -70,12 +77,17 @@ public partial class MainWindow : Window
                 ProjectComboBox.SelectedIndex = 0;
             }
         }
+        catch (UnauthorizedAccessException ex)
+        {
+            MessageBox.Show(
+                "Access to the required folder was denied.\n\n" + "Please check your permissions and try again.\n\n" + $"Details: {ex.Message}", "Access Denied", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error reading project folders: {ex.Message}");
+            MessageBox.Show(
+                "An unexpected error occurred while loading required folders.\n\n" + $"Details: {ex.Message}", "Unexpected Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
-
 
 
     private void SaveSettings()
