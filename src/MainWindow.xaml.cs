@@ -2,60 +2,36 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Text.Json;
-using System.Collections.Generic; // Required for Dictionary
 
 namespace BG3_Bounds_Editor;
 
 public partial class MainWindow : Window
 {
-    private readonly string _configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
-
     public MainWindow()
     {
         InitializeComponent();
         LoadSettings();
     }
 
-    private void PopulateProjectDropdown(string mainPath, string? lastSelectedProject = null)
+    private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(mainPath) || !Directory.Exists(mainPath)) return;
-
-        try
+        if (e.ChangedButton == MouseButton.Left)
         {
-            ProjectComboBox.Items.Clear();
-            string[] subDirectories = Directory.GetDirectories(mainPath);
-
-            foreach (string dir in subDirectories)
-            {
-                string folderName = Path.GetFileName(dir);
-                ProjectComboBox.Items.Add(folderName);
-            }
-
-            // Restore the last selected project if it still exists
-            if (!string.IsNullOrEmpty(lastSelectedProject) && ProjectComboBox.Items.Contains(lastSelectedProject))
-            {
-                ProjectComboBox.SelectedItem = lastSelectedProject;
-            }
-            else if (ProjectComboBox.Items.Count > 0)
-            {
-                ProjectComboBox.SelectedIndex = 0;
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error reading project folders: {ex.Message}");
+            this.DragMove();
         }
     }
 
-    private void SaveSettings()
+    private readonly string _configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+
+    private void SaveSettings(string path)
     {
         var data = new Dictionary<string, string>
-        {
-            { "BG3 Mod Folder Path", PathTextBox.Text },
-            { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" }
-        };
+    {
+        { "BG3 Mod Folder Path", path }
+    };
 
         var options = new JsonSerializerOptions { WriteIndented = true };
+
         string json = JsonSerializer.Serialize(data, options);
         File.WriteAllText(_configPath, json);
     }
@@ -68,24 +44,12 @@ public partial class MainWindow : Window
             {
                 string json = File.ReadAllText(_configPath);
                 using JsonDocument doc = JsonDocument.Parse(json);
-                var root = doc.RootElement;
-
-                if (root.TryGetProperty("BG3 Mod Folder Path", out JsonElement pathElement))
+                if (doc.RootElement.TryGetProperty("BG3 Mod Folder Path", out JsonElement pathElement))
                 {
-                    string mainPath = pathElement.GetString() ?? "";
-                    PathTextBox.Text = mainPath;
-
-                    // Load projects after setting the text
-                    string lastProject = "";
-                    if (root.TryGetProperty("Last Selected Project", out JsonElement projectElement))
-                    {
-                        lastProject = projectElement.GetString() ?? "";
-                    }
-
-                    PopulateProjectDropdown(mainPath, lastProject);
+                    PathTextBox.Text = pathElement.GetString();
                 }
             }
-            catch { /* Handle corrupted JSON */ }
+            catch { /* Handle corrupted JSON if necessary */ }
         }
     }
 
@@ -94,26 +58,14 @@ public partial class MainWindow : Window
         var dialog = new Microsoft.Win32.OpenFolderDialog
         {
             Title = "Select Baldur's Gate 3 data directory",
-            InitialDirectory = PathTextBox.Text
+            InitialDirectory = PathTextBox.Text // Starts where they last were
         };
 
         if (dialog.ShowDialog() == true)
         {
             PathTextBox.Text = dialog.FolderName;
-            PopulateProjectDropdown(dialog.FolderName);
-            SaveSettings(); // Save everything immediately
+            SaveSettings(dialog.FolderName);
         }
-    }
-
-    // Triggered when the user manually changes the dropdown selection
-    private void ProjectComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-    {
-        SaveSettings();
-    }
-
-    private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.ChangedButton == MouseButton.Left) this.DragMove();
     }
 
     private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
