@@ -11,6 +11,7 @@
         AllowsTransparency="True"
         Background="{x:Null}"
         Icon="/bg3_bounds_editor_logo.ico">
+
     <Border Margin="15" CornerRadius="8" Background="#FF1E1E1E" BorderBrush="#8acc25" BorderThickness="1">
         <Border.Effect>
             <DropShadowEffect Color="#ADFF2F" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>

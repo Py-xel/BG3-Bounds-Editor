@@ -16,14 +16,43 @@ public partial class MainWindow : Window
         LoadSettings();
     }
 
+    private readonly HashSet<string> ExcludedFolders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+{
+    "CrossplayUI",
+    "DiceSet_01",
+    "DiceSet_02",
+    "DiceSet_03",
+    "DiceSet_06",
+    "Engine",
+    "Gustav",
+    "GustavDev",
+    "GustavX",
+    "Honour",
+    "HonourX",
+    "MainUI",
+    "ModBrowser",
+    "PhotoMode",
+    "Shared",
+    "SharedDev",
+    "UserTemp"
+};
+
+
     private void PopulateProjectDropdown(string mainPath, string? lastSelectedProject = null)
     {
-        if (string.IsNullOrWhiteSpace(mainPath) || !Directory.Exists(mainPath)) return;
+        if (string.IsNullOrWhiteSpace(mainPath) || !Directory.Exists(mainPath))
+            return;
 
         try
         {
             ProjectComboBox.Items.Clear();
-            string[] subDirectories = Directory.GetDirectories(mainPath);
+
+            string publicPath = Path.Combine(mainPath, "Public");
+            if (!Directory.Exists(publicPath))
+                return;
+
+            var subDirectories = Directory.GetDirectories(publicPath)
+                .Where(dir => !ExcludedFolders.Contains(Path.GetFileName(dir)));
 
             foreach (string dir in subDirectories)
             {
@@ -31,8 +60,8 @@ public partial class MainWindow : Window
                 ProjectComboBox.Items.Add(folderName);
             }
 
-            // Restore the last selected project if it still exists
-            if (!string.IsNullOrEmpty(lastSelectedProject) && ProjectComboBox.Items.Contains(lastSelectedProject))
+            if (!string.IsNullOrEmpty(lastSelectedProject) &&
+                ProjectComboBox.Items.Contains(lastSelectedProject))
             {
                 ProjectComboBox.SelectedItem = lastSelectedProject;
             }
@@ -46,6 +75,8 @@ public partial class MainWindow : Window
             MessageBox.Show($"Error reading project folders: {ex.Message}");
         }
     }
+
+
 
     private void SaveSettings()
     {
