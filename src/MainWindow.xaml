@@ -48,6 +48,9 @@
                     <RowDefinition Height="15"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Baldur's Gate 3 Data Path -->
@@ -84,7 +87,16 @@
 
                 <Grid Grid.Row="4">
                     <Border BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30" Background="#FF2D2D30">
-                        <ComboBox x:Name="ProjectComboBox" Style="{StaticResource ComboBox.Base}"/>
+                        <ComboBox x:Name="ProjectComboBox" Style="{StaticResource ComboBox.Base}" SelectionChanged="ProjectComboBox_SelectionChanged"/>
+                    </Border>
+                </Grid>
+
+                <!-- LSF Browser -->
+                <TextBlock Grid.Row="6" Text="LSF file:" Foreground="#d0d0d0" FontSize="12" Margin="0,0,0,5"/>
+
+                <Grid Grid.Row="7">
+                    <Border BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30" Background="#FF2D2D30">
+                        <ComboBox x:Name="LSFComboBox" Style="{StaticResource ComboBox.Base}"/>
                     </Border>
                 </Grid>
             </Grid>
