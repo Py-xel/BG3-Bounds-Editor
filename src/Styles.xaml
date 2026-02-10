@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- #region BUTTON STYLES -->
-    
+
     <!-- BUTTON.BASE -->
     <Style x:Key="Button.Base" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
@@ -25,7 +25,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
     <!-- BUTTON.CLOSE -->
     <Style x:Key="Button.Close" TargetType="Button" BasedOn="{StaticResource Button.Base}">
         <Style.Triggers>
@@ -43,6 +43,102 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!--#endregion-->
+
+    <!-- #region COMBO BOX STYLES -->
+
+    <!-- 1. The Item Style: Controls the Green Hover/Selection in the list -->
+    <Style x:Key="ComboBoxItem.Base" TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <!-- Set a default BorderThickness so the layout doesn't "jump" when the outline appears -->
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="ItemBorder" Background="Transparent" BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" Margin="0.5,0.5">
+                        <ContentPresenter />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- Hover: Outline Only -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#FFADFF2F"/>
+                            <Setter TargetName="ItemBorder" Property="Background" Value="Transparent"/>
+                        </Trigger>
+
+                        <!-- Selected -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="ItemBorder" Property="Background" Value="#44006400"/>
+                            <Setter TargetName="ItemBorder" Property="BorderBrush" Value="Transparent"/>
+                        </Trigger>
+
+                        <!-- Selected + Hover -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True"/>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="ItemBorder" Property="Background" Value="#44006400"/>
+                            <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#FFADFF2F"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- 2. The Main Style: Controls the Box and the Popup container -->
+    <Style x:Key="ComboBox.Base" TargetType="ComboBox">
+        <!-- Link the item style here -->
+        <Setter Property="ItemContainerStyle" Value="{StaticResource ComboBoxItem.Base}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid>
+                        <ToggleButton Background="Transparent" BorderThickness="0" 
+                                  IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" 
+                                  Focusable="False">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border Background="Transparent">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="20" />
+                                            </Grid.ColumnDefinitions>
+                                            <Path Grid.Column="1" Data="M0,0 L4,4 L8,0 Z" Fill="White" 
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+
+                        <!-- SelectionBoxItem Foreground must be White -->
+                        <ContentPresenter Content="{TemplateBinding SelectionBoxItem}" 
+                                      ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
+                                      HorizontalAlignment="Left" VerticalAlignment="Center" 
+                                      Margin="8,0,0,0" IsHitTestVisible="False"
+                                      TextElement.Foreground="White"/>
+
+                        <Popup x:Name="PART_Popup" AllowsTransparency="True" 
+                           IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" 
+                           PopupAnimation="Fade">
+                            <Border Background="#FF2D2D30" BorderBrush="#FF3E3E42" BorderThickness="1" 
+                                MinWidth="{TemplateBinding ActualWidth}" Margin="0,2,0,0">
+                                <ScrollViewer MaxHeight="200">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- #endregion -->
+
 </ResourceDictionary>
