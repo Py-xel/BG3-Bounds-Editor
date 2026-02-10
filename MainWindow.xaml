@@ -11,7 +11,31 @@
         AllowsTransparency="True"
         Background="Transparent"
         Icon="/bg3_bounds_editor_logo.ico">
-    <Grid>
-
-    </Grid>
+    <Border Margin="15" CornerRadius="8" Background="#FF1E1E1E" BorderBrush="#8acc25" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="#ADFF2F" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- TITLE BAR -->
+            <Border Grid.Row="0" Background="#FF2D2D30" CornerRadius="7,7,0,0" MouseDown="TitleBar_MouseDown">
+                <Grid>
+                    <!-- LOGO & TITLE -->
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="7,0,0,0">
+                        <Image Source="/bg3_bounds_editor_logo.png" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="BG3 Bounds Editor" Foreground="#D0D0D0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,3,0,1" FontSize="14" FontFamily="Bahnschrift SemiBold" FontWeight="Bold"/>
+                    </StackPanel>
+                    <!-- WINDOW CONTROL BUTTONS -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="0" Style="{StaticResource Button.Minimize}" Click="Minimize_Click" FontFamily="Marlett"/>
+                        <Button Content="r" Style="{StaticResource Button.Close}" Click="Close_Click" FontFamily="Marlett"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
 </Window>
