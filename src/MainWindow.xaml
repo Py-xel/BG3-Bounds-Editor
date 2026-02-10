@@ -9,8 +9,7 @@
         ResizeMode="NoResize"
         WindowStyle="None"
         AllowsTransparency="True"
-        Background="{x:Null}"
-        Icon="/bg3_bounds_editor_logo.ico">
+        Background="{x:Null}">
 
     <Border Margin="15" CornerRadius="8" Background="#FF1E1E1E" BorderBrush="#8acc25" BorderThickness="1">
         <Border.Effect>
