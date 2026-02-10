@@ -11,13 +11,20 @@ using System.Windows.Shapes;
 
 namespace BG3_Bounds_Editor;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
 public partial class MainWindow : Window
 {
     public MainWindow()
     {
         InitializeComponent();
     }
+
+    private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if(e.ChangedButton == MouseButton.Left)
+        {
+            this.DragMove();
+        }
+    }
+    private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
+    private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 }
