@@ -34,6 +34,8 @@
                         <Button Content="0" Style="{StaticResource Button.Minimize}" Click="Minimize_Click" FontFamily="Marlett"/>
                         <Button Content="r" Style="{StaticResource Button.Close}" Click="Close_Click" FontFamily="Marlett"/>
                     </StackPanel>
+                    <!-- SEPARATOR LINE -->
+                    <Border BorderBrush="#FF3E3E42" BorderThickness="0,0,0,1" VerticalAlignment="Bottom"/>
                 </Grid>
             </Border>
         </Grid>
