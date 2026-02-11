@@ -50,6 +50,8 @@
                     <RowDefinition Height="15"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Baldur's Gate 3 Data Path -->
@@ -97,6 +99,55 @@
                     <Border BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30" Background="#FF2D2D30">
                         <ComboBox x:Name="LSFComboBox" Style="{StaticResource ComboBox.Base}"/>
                     </Border>
+                </Grid>
+
+                <!-- Bounds Editing -->
+                <Grid Grid.Row="9" Margin="100,50,100,0" Width="350">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <!-- Min Bound -->
+                        <TextBlock Text="minBound" Foreground="#d0d0d0" FontSize="11" Margin="0,0,0,3"/>
+                        <Border Background="#FF2D2D30" BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30" Margin="0,0,0,10">
+                            <TextBox x:Name="MinBoundTextBox" Background="Transparent" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center" Padding="8,0"/>
+                        </Border>
+
+                        <!-- Max Bound -->
+                        <TextBlock Text="maxBound" Foreground="#d0d0d0" FontSize="11" Margin="0,0,0,3"/>
+                        <Border Background="#FF2D2D30" BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30">
+                            <TextBox x:Name="MaxBoundTextBox" Background="Transparent" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center" Padding="8,0"/>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Side Buttons -->
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Bottom">
+                        <!-- Info Icon -->
+                        <Grid Width="35" Height="30" Margin="0,0,0,28" Background="Transparent" ToolTipService.Placement="Center" ToolTipService.VerticalOffset="-30">
+                            <Grid.ToolTip>
+                                <ToolTip Style="{StaticResource ToolTip.Info}" Content="Values must be space separated. e.g.: 1.204 2.452 8.423"/>
+                            </Grid.ToolTip>
+                            <TextBlock Style="{StaticResource TextBlock.InfoIcon}"/>
+                        </Grid>
+
+                        <!-- Save Button -->
+                        <Button Width="35" Height="30" Style="{StaticResource Button.Base}" HorizontalAlignment="Center">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="SaveBorder" Background="#FF3E3E42" CornerRadius="4" BorderBrush="#FF4E4E52" BorderThickness="1">
+                                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="SaveBorder" Property="Background" Value="#FF4E4E52"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Grid>
         </Grid>
