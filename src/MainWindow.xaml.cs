@@ -3,8 +3,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Text.Json;
 using System.Windows.Controls;
+using System.Xml.Linq;
 using LSLib.LS;
 using LSLib.LS.Enums;
+using System.Text.RegularExpressions;
 
 namespace BG3_Bounds_Editor;
 
@@ -200,47 +202,131 @@ public partial class MainWindow : Window
     {
         try
         {
-            // 1. Create Load Parameters (Required by newer LSLib versions)
             var loadParams = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3);
-
-            // 2. Create Conversion/Save Parameters
             var conversionParams = new ResourceConversionParameters
             {
-                LSF = LSFVersion.VerBG3Patch3, // Uses the version from your provided class
+                LSF = LSFVersion.VerBG3Patch3,
                 LSX = LSXVersion.V4,
                 PrettyPrint = true
             };
 
-            // 3. Load using BOTH arguments
             Resource resource = ResourceUtils.LoadResource(inputPath, loadParams);
-
-            // 4. Save to destination
             ResourceUtils.SaveResource(resource, outputPath, conversionParams);
-
-            MessageBox.Show("Conversion successful!");
         }
         catch (Exception ex)
         {
             MessageBox.Show($"LSLib Error: {ex.Message}");
         }
     }
-    private void TestConvert_Click(object sender, RoutedEventArgs e)
-    {
-        // Hardcoded test paths
-        string testInput = @"C:\Users\-\Desktop\LSF_LSX_Test\9037c97f-0452-4b36-beec-9175e6ac21fc.lsf";
-        string testOutput = @"C:\Users\-\Desktop\LSF_LSX_Test\9037c97f-0452-4b36-beec-9175e6ac21fc.lsx";
 
-        if (File.Exists(testInput))
+    private void ConvertLsxToLsfInternal(string inputPath, string outputPath)
+    {
+        var loadParams = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3);
+        var conversionParams = new ResourceConversionParameters
         {
-            ConvertLsfToLsxInternal(testInput, testOutput);
+            LSF = LSFVersion.VerBG3Patch3,
+            LSX = LSXVersion.V4
+        };
+
+        Resource resource = ResourceUtils.LoadResource(inputPath, loadParams);
+        ResourceUtils.SaveResource(resource, outputPath, ResourceFormat.LSF, conversionParams);
+    }
+
+
+    private void EditLsxBounds(string lsxPath, string minVal, string maxVal)
+    {
+        XDocument doc = XDocument.Load(lsxPath);
+
+        // .lsf id must be "VisualBank" only!
+        var visualBankRegion = doc.Descendants("region")
+            .FirstOrDefault(r => (string)r.Attribute("id") == "VisualBank");
+
+        if (visualBankRegion == null)
+        {
+            throw new Exception("This file is not a valid VisualBank resource.");
         }
-        else
+
+        bool minUpdated = false;
+        bool maxUpdated = false;
+
+        var attributes = doc.Descendants("attribute");
+        foreach (var attr in attributes)
         {
-            MessageBox.Show($"File not found: {testInput}");
+            string? id = attr.Attribute("id")?.Value;
+
+            if (id == "BoundsMin")
+            {
+                attr.SetAttributeValue("value", minVal);
+                minUpdated = true;
+            }
+            else if (id == "BoundsMax")
+            {
+                attr.SetAttributeValue("value", maxVal);
+                maxUpdated = true;
+            }
+        }
+
+        if (!minUpdated || maxUpdated == false)
+        {
+            throw new Exception("Could not find BoundsMin or BoundsMax attributes in this file.");
+        }
+
+        doc.Save(lsxPath);
+    }
+
+    private void Save_Click(object sender, RoutedEventArgs e)
+    {
+        string selectedProject = ProjectComboBox.SelectedItem.ToString();
+        string selectedFile = LSFComboBox.SelectedItem.ToString();
+        string lsfPath = Path.Combine(MainDataPath, "Public", selectedProject, "Content", selectedFile);
+
+        string tempLsx = Path.ChangeExtension(lsfPath, ".lsx");
+
+        try
+        {
+            ConvertLsfToLsxInternal(lsfPath, tempLsx);
+            EditLsxBounds(tempLsx, MinBoundTextBox.Text, MaxBoundTextBox.Text);
+            ConvertLsxToLsfInternal(tempLsx, lsfPath);
+
+            // Delete .lsx if prompted
+            if (KeepLsxCheckBox.IsChecked == false && File.Exists(tempLsx))
+            {
+                File.Delete(tempLsx);
+            }
+
+            // LOG: SUCCESS HERE
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error during processing: {ex.Message}");
         }
     }
 
     private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
     private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 
+    // Input sanitization
+    private void BoundsTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        // The \- escapes the hyphen so it's treated as a character, not a range
+        Regex regex = new Regex("[^0-9.\\-\\s]+");
+        e.Handled = regex.IsMatch(e.Text);
+    }
+
+    private void BoundsTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+    {
+        if (e.DataObject.GetDataPresent(DataFormats.Text))
+        {
+            string text = (string)e.DataObject.GetData(DataFormats.Text);
+
+            // Convert any European-style commas to dots before validation
+            string sanitized = text.Replace(',', '.');
+
+            Regex regex = new Regex("[^0-9.\\-\\s]+");
+            if (regex.IsMatch(sanitized))
+            {
+                e.CancelCommand();
+            }
+        }
+    }
 }
