@@ -18,6 +18,12 @@
 
   <ItemGroup>
     <Content Include="bg3_bounds_editor_logo.ico" />
+    <Reference Include="LSLib">
+      <HintPath>LSLib.dll</HintPath>
+    </Reference>
+    <Reference Include="LSLibNative">
+      <HintPath>LSLibNative.dll</HintPath>
+    </Reference>
     <Resource Include="bg3_bounds_editor_logo.ico" />
     <Resource Include="bg3_bounds_editor_logo.png" />
   </ItemGroup>
