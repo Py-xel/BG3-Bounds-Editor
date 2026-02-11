@@ -181,5 +181,47 @@
     </Style>
 
     <!-- #endregion -->
+    
+    <!-- #region INFO ICON -->
+    <Style x:Key="ToolTip.Info" TargetType="ToolTip">
+        <Setter Property="Background" Value="#FF2D2D30"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#8acc25"/>
+        <Setter Property="Padding" Value="8,4"/>
+        <Setter Property="Placement" Value="Top"/>
+        <Setter Property="HorizontalOffset" Value="0"/>
+        <Setter Property="VerticalOffset" Value="-5"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="1" 
+                        CornerRadius="4">
+                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Info Icon Style -->
+    <Style x:Key="TextBlock.InfoIcon" TargetType="TextBlock">
+        <Setter Property="Text" Value="&#xE946;"/>
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
+        <Setter Property="Foreground" Value="#acff2e"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="Cursor" Value="Help"/>
+        <Setter Property="Opacity" Value="0.7"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="1"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--  #endregion -->
 
 </ResourceDictionary>
