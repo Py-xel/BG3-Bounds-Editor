@@ -2,8 +2,9 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Text.Json;
-using System.Collections.Generic;
-using System.Windows.Controls; // Required for Dictionary
+using System.Windows.Controls;
+using LSLib.LS;
+using LSLib.LS.Enums;
 
 namespace BG3_Bounds_Editor;
 
@@ -195,6 +196,51 @@ public partial class MainWindow : Window
         if (e.ChangedButton == MouseButton.Left) this.DragMove();
     }
 
+    private void ConvertLsfToLsxInternal(string inputPath, string outputPath)
+    {
+        try
+        {
+            // 1. Create Load Parameters (Required by newer LSLib versions)
+            var loadParams = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3);
+
+            // 2. Create Conversion/Save Parameters
+            var conversionParams = new ResourceConversionParameters
+            {
+                LSF = LSFVersion.VerBG3Patch3, // Uses the version from your provided class
+                LSX = LSXVersion.V4,
+                PrettyPrint = true
+            };
+
+            // 3. Load using BOTH arguments
+            Resource resource = ResourceUtils.LoadResource(inputPath, loadParams);
+
+            // 4. Save to destination
+            ResourceUtils.SaveResource(resource, outputPath, conversionParams);
+
+            MessageBox.Show("Conversion successful!");
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"LSLib Error: {ex.Message}");
+        }
+    }
+    private void TestConvert_Click(object sender, RoutedEventArgs e)
+    {
+        // Hardcoded test paths
+        string testInput = @"C:\Users\-\Desktop\LSF_LSX_Test\9037c97f-0452-4b36-beec-9175e6ac21fc.lsf";
+        string testOutput = @"C:\Users\-\Desktop\LSF_LSX_Test\9037c97f-0452-4b36-beec-9175e6ac21fc.lsx";
+
+        if (File.Exists(testInput))
+        {
+            ConvertLsfToLsxInternal(testInput, testOutput);
+        }
+        else
+        {
+            MessageBox.Show($"File not found: {testInput}");
+        }
+    }
+
     private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
     private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
+
 }

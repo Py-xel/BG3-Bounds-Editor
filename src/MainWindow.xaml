@@ -133,7 +133,7 @@
                         </Grid>
 
                         <!-- Save Button -->
-                        <Button Width="35" Height="30" Style="{StaticResource Button.Base}" HorizontalAlignment="Center">
+                        <Button Width="35" Height="30" Style="{StaticResource Button.Base}" HorizontalAlignment="Center" Click="TestConvert_Click">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border x:Name="SaveBorder" Background="#FF3E3E42" CornerRadius="4" BorderBrush="#FF4E4E52" BorderThickness="1">
