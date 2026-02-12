@@ -52,6 +52,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="15"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <!-- Baldur's Gate 3 Data Path -->
@@ -92,7 +93,7 @@
                         <ComboBox x:Name="ProjectComboBox" Style="{StaticResource ComboBox.Base}" SelectionChanged="ProjectComboBox_SelectionChanged"/>
                     </Border>
                 </Grid>
-                
+
                 <!-- LSF Browser -->
                 <Grid Grid.Row="7">
                     <Grid.RowDefinitions>
@@ -129,15 +130,15 @@
 
                     <StackPanel Grid.Column="0">
                         <!-- Min Bound -->
-                        <TextBlock Text="BoundMin" Style="{StaticResource TextBlock.Description}"/>
+                        <TextBlock Text="BoundsMin" Style="{StaticResource TextBlock.Description}"/>
                         <Border Style="{StaticResource Border.Base}" Margin="0,0,0,10">
-                            <TextBox x:Name="MinBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
+                            <TextBox x:Name="MinBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" PreviewKeyDown="BoundsTextBox_PreviewKeyDown"/>
                         </Border>
 
                         <!-- Max Bound -->
-                        <TextBlock Text="BoundMax" Style="{StaticResource TextBlock.Description}"/>
+                        <TextBlock Text="BoundsMax" Style="{StaticResource TextBlock.Description}"/>
                         <Border Style="{StaticResource Border.Base}">
-                            <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
+                            <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" PreviewKeyDown="BoundsTextBox_PreviewKeyDown"/>
                         </Border>
                     </StackPanel>
 
@@ -167,6 +168,22 @@
                             </Button.Template>
                         </Button>
                     </StackPanel>
+                </Grid>
+                
+                <!-- LOG -->
+                <Grid Grid.Row="10" Margin="0,20,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Log Output:" Style="{StaticResource TextBlock.Description}" Margin="0,0,0,5"/>
+
+                    <Border Grid.Row="1" Background="#FF121212" BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <TextBlock x:Name="ConsoleBlock" FontFamily="Consolas" FontSize="11" Margin="10" TextWrapping="Wrap"/>
+                        </ScrollViewer>
+                    </Border>
                 </Grid>
             </Grid>
         </Grid>
