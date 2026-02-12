@@ -50,8 +50,7 @@ public partial class MainWindow : Window
         ProjectComboBox.Items.Clear();
         LSFComboBox.Items.Clear();
 
-        if (string.IsNullOrWhiteSpace(mainPath) || !Directory.Exists(mainPath))
-            return;
+        if (string.IsNullOrWhiteSpace(mainPath) || !Directory.Exists(mainPath)) return;
 
         try
         {
@@ -60,7 +59,8 @@ public partial class MainWindow : Window
 
             if (!Directory.Exists(publicPath))
             {
-                MessageBox.Show($"Folder not found:\n\n{publicPath}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                // LOG: ERROR HERE
+                //MessageBox.Show($"Folder not found:\n\n{publicPath}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -79,30 +79,30 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error loading projects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            // LOG: ERROR HERE
+            //MessageBox.Show($"Error loading projects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
+    private void ProjectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (ProjectComboBox.SelectedItem == null)
+            return;
 
+        string selectedProject = ProjectComboBox.SelectedItem.ToString()!;
+        PopulateLSFDropdown(selectedProject);
+    }
     private void PopulateLSFDropdown(string selectedProject)
     {
-        // FIX: Clear immediately so old data is wiped even if the checks below fail
         LSFComboBox.Items.Clear();
 
-        if (string.IsNullOrEmpty(selectedProject) || string.IsNullOrEmpty(MainDataPath))
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(selectedProject) || string.IsNullOrEmpty(MainDataPath)) return;
 
         try
         {
             // Construct path: MainDataPath\Public\<MODNAME>\Content
             string assetsPath = Path.Combine(MainDataPath, "Public", selectedProject, "Content");
 
-            if (!Directory.Exists(assetsPath))
-            {
-                // The box is already cleared from the top of the method, so we just exit
-                return;
-            }
+            if (!Directory.Exists(assetsPath)) return;
 
             var lsfFiles = Directory.EnumerateFiles(assetsPath, "*.lsf", SearchOption.AllDirectories)
                 .Select(file => Path.GetFileName(file))
@@ -120,11 +120,12 @@ public partial class MainWindow : Window
         {
             // Double check clear on error
             LSFComboBox.Items.Clear();
-            MessageBox.Show($"Error loading LSF files: {ex.Message}", "LSF Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            // LOG: ERROR HERE
+            //MessageBox.Show($"Error loading LSF files: {ex.Message}", "LSF Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
 
-
+    /* USER SETTINGS */
     private void SaveSettings()
     {
         var data = new Dictionary<string, string>
@@ -137,7 +138,6 @@ public partial class MainWindow : Window
         string json = JsonSerializer.Serialize(data, options);
         File.WriteAllText(_configPath, json);
     }
-
     private void LoadSettings()
     {
         if (File.Exists(_configPath))
@@ -167,6 +167,11 @@ public partial class MainWindow : Window
         }
     }
 
+    /* WINDOW CONTROL */
+    private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left) this.DragMove();
+    }
     private void Browse_Click(object sender, RoutedEventArgs e)
     {
         var dialog = new Microsoft.Win32.OpenFolderDialog
@@ -182,22 +187,37 @@ public partial class MainWindow : Window
             SaveSettings(); // Save everything immediately
         }
     }
-
-    // Triggered when the user manually changes the dropdown selection
-    private void ProjectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void Save_Click(object sender, RoutedEventArgs e)
     {
-        if (ProjectComboBox.SelectedItem == null)
-            return;
+        string selectedProject = ProjectComboBox.SelectedItem.ToString();
+        string selectedFile = LSFComboBox.SelectedItem.ToString();
+        string lsfPath = Path.Combine(MainDataPath, "Public", selectedProject, "Content", selectedFile);
 
-        string selectedProject = ProjectComboBox.SelectedItem.ToString()!;
-        PopulateLSFDropdown(selectedProject);
+        string tempLsx = Path.ChangeExtension(lsfPath, ".lsx");
+
+        try
+        {
+            ConvertLsfToLsxInternal(lsfPath, tempLsx);
+            EditLsxBounds(tempLsx, MinBoundTextBox.Text, MaxBoundTextBox.Text);
+            ConvertLsxToLsfInternal(tempLsx, lsfPath);
+
+            // Delete .lsx if prompted
+            if (KeepLsxCheckBox.IsChecked == false && File.Exists(tempLsx))
+            {
+                File.Delete(tempLsx);
+            }
+
+            // LOG: SUCCESS HERE
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error during processing: {ex.Message}");
+        }
     }
+    private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
+    private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 
-    private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (e.ChangedButton == MouseButton.Left) this.DragMove();
-    }
-
+    /* CONVERSION */
     private void ConvertLsfToLsxInternal(string inputPath, string outputPath)
     {
         try
@@ -218,7 +238,6 @@ public partial class MainWindow : Window
             MessageBox.Show($"LSLib Error: {ex.Message}");
         }
     }
-
     private void ConvertLsxToLsfInternal(string inputPath, string outputPath)
     {
         var loadParams = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3);
@@ -231,8 +250,6 @@ public partial class MainWindow : Window
         Resource resource = ResourceUtils.LoadResource(inputPath, loadParams);
         ResourceUtils.SaveResource(resource, outputPath, ResourceFormat.LSF, conversionParams);
     }
-
-
     private void EditLsxBounds(string lsxPath, string minVal, string maxVal)
     {
         XDocument doc = XDocument.Load(lsxPath);
@@ -274,45 +291,13 @@ public partial class MainWindow : Window
         doc.Save(lsxPath);
     }
 
-    private void Save_Click(object sender, RoutedEventArgs e)
-    {
-        string selectedProject = ProjectComboBox.SelectedItem.ToString();
-        string selectedFile = LSFComboBox.SelectedItem.ToString();
-        string lsfPath = Path.Combine(MainDataPath, "Public", selectedProject, "Content", selectedFile);
-
-        string tempLsx = Path.ChangeExtension(lsfPath, ".lsx");
-
-        try
-        {
-            ConvertLsfToLsxInternal(lsfPath, tempLsx);
-            EditLsxBounds(tempLsx, MinBoundTextBox.Text, MaxBoundTextBox.Text);
-            ConvertLsxToLsfInternal(tempLsx, lsfPath);
-
-            // Delete .lsx if prompted
-            if (KeepLsxCheckBox.IsChecked == false && File.Exists(tempLsx))
-            {
-                File.Delete(tempLsx);
-            }
-
-            // LOG: SUCCESS HERE
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Error during processing: {ex.Message}");
-        }
-    }
-
-    private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
-    private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
-
-    // Input sanitization
+    /* INPUT SANITIZATION */
     private void BoundsTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
         // The \- escapes the hyphen so it's treated as a character, not a range
         Regex regex = new Regex("[^0-9.\\-\\s]+");
         e.Handled = regex.IsMatch(e.Text);
     }
-
     private void BoundsTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
     {
         if (e.DataObject.GetDataPresent(DataFormats.Text))
