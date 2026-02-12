@@ -64,7 +64,7 @@
         <Setter Property="Foreground" Value="{StaticResource Brushes.LightGray}"/>
         <Setter Property="Margin" Value="0,0,0,5"/>
     </Style>
-    
+
     <!-- TextBlock.Icon -->
     <Style x:Key="TextBlock.Icon" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
@@ -91,17 +91,18 @@
         <Setter Property="IsHitTestVisible" Value="False"/>
     </Style>
 
-    <!-- TextBox.Bounds -->
-    <Style x:Key="TextBox.Bounds" TargetType="TextBox">
+    <!-- TextBox.Edit -->
+    <Style x:Key="TextBox.Edit" TargetType="TextBox">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Foreground" Value="{StaticResource Brushes.White}"/>
+        <Setter Property="CaretBrush" Value="{StaticResource Brushes.LightGreen}" />
         <Setter Property="Height" Value="35"/>
         <Setter Property="Margin" Value="5,3,0,2"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="Padding" Value="0,8"/>
     </Style>
-    
+
     <!-- #endregion -->
 
     <!-- #region BUTTON STYLES -->
@@ -227,9 +228,10 @@
                         <Popup x:Name="PART_Popup" AllowsTransparency="True" 
                            IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="Fade">
                             <Border Background="#FF2D2D30" BorderBrush="#FF3E3E42" BorderThickness="1" MinWidth="{TemplateBinding ActualWidth}" Margin="0,2,0,0">
-                                <ScrollViewer MaxHeight="189" ScrollViewer.CanContentScroll="False">
-                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                <ScrollViewer MaxHeight="189" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="False">
+                                    <ItemsPresenter />
                                 </ScrollViewer>
+
                             </Border>
                         </Popup>
                     </Grid>
@@ -246,7 +248,6 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">
                     <Border x:Name="rectangle" CornerRadius="3" Background="#FF3E3E42" Width="6" Margin="2,5"/>
-
                     <ControlTemplate.Triggers>
                         <EventTrigger RoutedEvent="MouseEnter">
                             <BeginStoryboard>
