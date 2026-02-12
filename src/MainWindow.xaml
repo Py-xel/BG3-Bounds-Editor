@@ -92,16 +92,29 @@
                         <ComboBox x:Name="ProjectComboBox" Style="{StaticResource ComboBox.Base}" SelectionChanged="ProjectComboBox_SelectionChanged"/>
                     </Border>
                 </Grid>
-
+                
                 <!-- LSF Browser -->
-                <TextBlock Grid.Row="6" Text=".lsf file:" Style="{StaticResource TextBlock.Description}"/>
-
                 <Grid Grid.Row="7">
-                    <Border Style="{StaticResource Border.Base}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="75*" />
+                        <ColumnDefinition Width="25*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text=".lsf file:" Style="{StaticResource TextBlock.Description}" Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Search:" Style="{StaticResource TextBlock.Description}" Margin="0,0,0,4"/>
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource Border.Base}" Margin="0,0,8,0">
                         <ComboBox x:Name="LSFComboBox" Style="{StaticResource ComboBox.Base}"/>
                     </Border>
+
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource Border.Base}">
+                        <TextBox x:Name="LSFSearchBox" Style="{StaticResource TextBox.Edit}" TextChanged="LSFSearchBox_TextChanged" />
+                    </Border>
                 </Grid>
-                
+
                 <!-- Checkbox: Keep .lsx -->
                 <Grid Grid.Row="9" Margin="0,0,0,131">
                     <CheckBox x:Name="KeepLsxCheckBox" Content="Keep .lsx file after conversion" Style="{StaticResource CheckBox.Base}"/>
@@ -118,13 +131,13 @@
                         <!-- Min Bound -->
                         <TextBlock Text="BoundMin" Style="{StaticResource TextBlock.Description}"/>
                         <Border Style="{StaticResource Border.Base}" Margin="0,0,0,10">
-                            <TextBox x:Name="MinBoundTextBox" Style="{StaticResource TextBox.Bounds}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
+                            <TextBox x:Name="MinBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
                         </Border>
 
                         <!-- Max Bound -->
                         <TextBlock Text="BoundMax" Style="{StaticResource TextBlock.Description}"/>
                         <Border Style="{StaticResource Border.Base}">
-                            <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Bounds}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
+                            <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
                         </Border>
                     </StackPanel>
 

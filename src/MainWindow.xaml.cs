@@ -7,6 +7,8 @@ using System.Xml.Linq;
 using LSLib.LS;
 using LSLib.LS.Enums;
 using System.Text.RegularExpressions;
+using System.Windows.Data;
+using System.ComponentModel;
 
 namespace BG3_Bounds_Editor;
 
@@ -94,35 +96,45 @@ public partial class MainWindow : Window
     private void PopulateLSFDropdown(string selectedProject)
     {
         LSFComboBox.Items.Clear();
-
         if (string.IsNullOrEmpty(selectedProject) || string.IsNullOrEmpty(MainDataPath)) return;
 
         try
         {
-            // Construct path: MainDataPath\Public\<MODNAME>\Content
             string assetsPath = Path.Combine(MainDataPath, "Public", selectedProject, "Content");
-
             if (!Directory.Exists(assetsPath)) return;
 
             var lsfFiles = Directory.EnumerateFiles(assetsPath, "*.lsf", SearchOption.AllDirectories)
                 .Select(file => Path.GetFileName(file))
-                .OrderBy(name => name);
+                .OrderBy(name => name)
+                .ToList(); // Keep as a list
 
             foreach (string file in lsfFiles)
-            {
                 LSFComboBox.Items.Add(file);
-            }
 
             if (LSFComboBox.Items.Count > 0)
                 LSFComboBox.SelectedIndex = 0;
         }
-        catch (Exception ex)
+        catch (Exception) { LSFComboBox.Items.Clear(); }
+    }
+
+    private void LSFSearchBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        string filter = LSFSearchBox.Text.ToLower();
+
+        // Get the default view for the ComboBox items
+        ICollectionView view = CollectionViewSource.GetDefaultView(LSFComboBox.Items);
+
+        if (view != null)
         {
-            // Double check clear on error
-            LSFComboBox.Items.Clear();
-            // LOG: ERROR HERE
-            //MessageBox.Show($"Error loading LSF files: {ex.Message}", "LSF Load Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            view.Filter = item =>
+            {
+                if (string.IsNullOrWhiteSpace(filter)) return true;
+                return item.ToString()!.ToLower().Contains(filter);
+            };
         }
+
+        // Auto-select the first result of the filtered list
+        if (LSFComboBox.Items.Count > 0) LSFComboBox.SelectedIndex = 0;
     }
 
     /* USER SETTINGS */
