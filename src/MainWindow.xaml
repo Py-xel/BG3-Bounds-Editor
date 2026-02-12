@@ -27,7 +27,7 @@
                     <!-- LOGO & TITLE -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="7,0,0,0">
                         <Image Source="/bg3_bounds_editor_logo.png" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="BG3 Bounds Editor" Foreground="#D0D0D0" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,3,0,1" FontSize="14" FontFamily="Bahnschrift SemiBold" FontWeight="Bold"/>
+                        <TextBlock Text="BG3 Bounds Editor" Style="{StaticResource TextBlock.Title}"/>
                     </StackPanel>
                     <!-- WINDOW CONTROL BUTTONS -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -55,7 +55,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Baldur's Gate 3 Data Path -->
-                <TextBlock Grid.Row="0" Text="Baldur's Gate 3 Data Folder:" Foreground="#d0d0d0" FontSize="12" Margin="0,0,0,5"/>
+                <TextBlock Grid.Row="0" Text="Baldur's Gate 3 Data Folder:" Style="{StaticResource TextBlock.Description}"/>
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
@@ -63,15 +63,16 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Column="0" Background="#FF2D2D30" BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30">
-                        <TextBox x:Name="PathTextBox" Background="Transparent" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center" Padding="8,0" IsReadOnly="True" IsHitTestVisible="False"/>
+                    <Border Grid.Column="0" Style="{StaticResource Border.Base}">
+                        <TextBox x:Name="PathTextBox" Style="{StaticResource TextBox.Path}"/>
                     </Border>
 
+                    <!-- Browse Button -->
                     <Button Grid.Column="1" Width="35" Height="30" Margin="8,0,0,0" Style="{StaticResource Button.Base}" Click="Browse_Click">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border x:Name="DirBorder" Background="#FF3E3E42" CornerRadius="4" BorderBrush="#FF4E4E52" BorderThickness="1" >
-                                    <TextBlock Text="&#xED25;" FontFamily="Segoe MDL2 Assets" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
+                                <Border x:Name="DirBorder" Style="{StaticResource Border.Button}">
+                                    <TextBlock Text="&#xED25;" Style="{StaticResource TextBlock.Icon}"/>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
@@ -84,25 +85,26 @@
                 </Grid>
 
                 <!-- Project Folder -->
-                <TextBlock Grid.Row="3" Text="Project Folder:" Foreground="#d0d0d0" FontSize="12" Margin="0,0,0,5"/>
+                <TextBlock Grid.Row="3" Text="Project Folder:" Style="{StaticResource TextBlock.Description}"/>
 
                 <Grid Grid.Row="4">
-                    <Border BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30" Background="#FF2D2D30">
+                    <Border Style="{StaticResource Border.Base}">
                         <ComboBox x:Name="ProjectComboBox" Style="{StaticResource ComboBox.Base}" SelectionChanged="ProjectComboBox_SelectionChanged"/>
                     </Border>
                 </Grid>
 
                 <!-- LSF Browser -->
-                <TextBlock Grid.Row="6" Text="LSF file:" Foreground="#d0d0d0" FontSize="12" Margin="0,0,0,5"/>
+                <TextBlock Grid.Row="6" Text=".lsf file:" Style="{StaticResource TextBlock.Description}"/>
 
                 <Grid Grid.Row="7">
-                    <Border BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30" Background="#FF2D2D30">
+                    <Border Style="{StaticResource Border.Base}">
                         <ComboBox x:Name="LSFComboBox" Style="{StaticResource ComboBox.Base}"/>
                     </Border>
                 </Grid>
-
-                <Grid Grid.Row="9">
-                    <CheckBox x:Name="KeepLsxCheckBox" Content="Keep .lsx file after conversion" Foreground="#d0d0d0" FontSize="11" Margin="0,10,0,0" IsChecked="False"/>
+                
+                <!-- Checkbox: Keep .lsx -->
+                <Grid Grid.Row="9" Margin="0,0,0,131">
+                    <CheckBox x:Name="KeepLsxCheckBox" Content="Keep .lsx file after conversion" Style="{StaticResource CheckBox.Base}"/>
                 </Grid>
 
                 <!-- Bounds Editing -->
@@ -114,15 +116,15 @@
 
                     <StackPanel Grid.Column="0">
                         <!-- Min Bound -->
-                        <TextBlock Text="minBound" Foreground="#d0d0d0" FontSize="11" Margin="0,0,0,3"/>
-                        <Border Background="#FF2D2D30" BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30" Margin="0,0,0,10">
-                            <TextBox x:Name="MinBoundTextBox" Background="Transparent" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center" Padding="8,0" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
+                        <TextBlock Text="BoundMin" Style="{StaticResource TextBlock.Description}"/>
+                        <Border Style="{StaticResource Border.Base}" Margin="0,0,0,10">
+                            <TextBox x:Name="MinBoundTextBox" Style="{StaticResource TextBox.Bounds}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
                         </Border>
 
                         <!-- Max Bound -->
-                        <TextBlock Text="maxBound" Foreground="#d0d0d0" FontSize="11" Margin="0,0,0,3"/>
-                        <Border Background="#FF2D2D30" BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4" Height="30">
-                            <TextBox x:Name="MaxBoundTextBox" Background="Transparent" BorderThickness="0" Foreground="White" VerticalContentAlignment="Center" Padding="8,0" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
+                        <TextBlock Text="BoundMax" Style="{StaticResource TextBlock.Description}"/>
+                        <Border Style="{StaticResource Border.Base}">
+                            <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Bounds}" PreviewTextInput="BoundsTextBox_PreviewTextInput" DataObject.Pasting="BoundsTextBox_Pasting"/>
                         </Border>
                     </StackPanel>
 
@@ -140,8 +142,8 @@
                         <Button Width="35" Height="30" Style="{StaticResource Button.Base}" HorizontalAlignment="Center" Click="Save_Click">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border x:Name="SaveBorder" Background="#FF3E3E42" CornerRadius="4" BorderBrush="#FF4E4E52" BorderThickness="1">
-                                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14"/>
+                                    <Border x:Name="SaveBorder" Style="{StaticResource Border.Button}">
+                                        <TextBlock Text="&#xE74E;" Style="{StaticResource TextBlock.Icon}"/>
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
