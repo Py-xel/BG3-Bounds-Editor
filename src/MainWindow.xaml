@@ -118,7 +118,7 @@
 
                 <!-- Checkbox: Keep .lsx -->
                 <Grid Grid.Row="9" Margin="0,0,0,131">
-                    <CheckBox x:Name="KeepLsxCheckBox" Content="Keep .lsx file after conversion" Style="{StaticResource CheckBox.Base}"/>
+                    <CheckBox x:Name="KeepLsxCheckBox" Content="Keep .lsx file after conversion" Style="{StaticResource CheckBox.Base}" Checked="KeepLsxCheckBox_Changed" Unchecked="KeepLsxCheckBox_Changed"/>
                 </Grid>
 
                 <!-- Bounds Editing -->

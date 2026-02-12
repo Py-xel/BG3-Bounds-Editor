@@ -93,6 +93,11 @@ public partial class MainWindow : Window
 
         string selectedProject = ProjectComboBox.SelectedItem.ToString()!;
         PopulateLSFDropdown(selectedProject);
+        UpdateConfig();
+    }
+    private void KeepLsxCheckBox_Changed(object sender, RoutedEventArgs e)
+    {
+        UpdateConfig();
     }
     private void PopulateLSFDropdown(string selectedProject)
     {
@@ -155,11 +160,11 @@ public partial class MainWindow : Window
     /* USER SETTINGS */
     private void SaveSettings()
     {
-        var data = new Dictionary<string, object> // 'object' is the key here
+        var data = new Dictionary<string, object>
     {
         { "BG3 Mod Folder Path", PathTextBox.Text },
         { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" },
-        { "Keep .lsx after conversion", KeepLsxCheckBox.IsChecked ?? false } // Saves as actual boolean
+        { "Keep .lsx after conversion", KeepLsxCheckBox.IsChecked ?? false }
     };
 
         var options = new JsonSerializerOptions { WriteIndented = true };
@@ -219,7 +224,7 @@ public partial class MainWindow : Window
         {
             PathTextBox.Text = dialog.FolderName;
             PopulateProjectDropdown(dialog.FolderName);
-            SaveSettings(); // Save everything immediately
+            SaveSettings();
         }
     }
     private void Save_Click(object sender, RoutedEventArgs e)
@@ -250,10 +255,7 @@ public partial class MainWindow : Window
         try
         {
             ConvertLsfToLsxInternal(lsfPath, tempLsx);
-
-            // Use the already trimmed variables
             EditLsxBounds(tempLsx, trimmedMin, trimmedMax);
-
             ConvertLsxToLsfInternal(tempLsx, lsfPath);
 
             if (KeepLsxCheckBox.IsChecked == false && File.Exists(tempLsx))
@@ -266,10 +268,34 @@ public partial class MainWindow : Window
             LogToConsole($"Processing Error: {ex.Message}", LogType.Error);
         }
     }
-
-
     private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
     private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
+
+    /* SAVING */
+    private void UpdateConfig()
+    {
+        try
+        {
+            // Use a Dictionary to allow keys with spaces/special characters
+            var configData = new Dictionary<string, object>
+        {
+            { "BG3 Mod Folder Path", PathTextBox.Text },
+            { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" },
+            { "Keep .lsx after conversion", KeepLsxCheckBox.IsChecked ?? false },
+        };
+
+            // Serialize with Indented formatting for readability
+            string json = JsonSerializer.Serialize(configData, new JsonSerializerOptions { WriteIndented = true });
+
+            // Write to the file path (ensure this matches your loading path)
+            File.WriteAllText("config.json", json);
+        }
+        catch (Exception ex)
+        {
+            LogToConsole($"Failed to update config.json: {ex.Message}", LogType.Warning);
+        }
+    }
+
 
     /* CONVERSION */
     private void ConvertLsfToLsxInternal(string inputPath, string outputPath)
@@ -399,34 +425,44 @@ public partial class MainWindow : Window
     public enum LogType { Info, Warning, Error, Success }
     private void LogToConsole(string message, LogType type = LogType.Info)
     {
+        string timestamp = DateTime.Now.ToString("HH:mm:ss");
+        string fullDate = DateTime.Now.ToString("yyyy-MM-dd");
+        string tag = $"[{type.ToString().ToUpper()}]";
+        string logLine = $"[{fullDate} {timestamp}] {tag} {message}";
+
+        try
+        {
+            File.AppendAllText("log.txt", logLine + Environment.NewLine);
+        }
+        catch (Exception)
+        {
+ 
+        }
+
         Dispatcher.Invoke(() =>
         {
-            string timestamp = DateTime.Now.ToString("HH:mm:ss");
-
-            // Define the Label and Color based on type
-            string tag = $"[{type.ToString().ToUpper()}]";
-
             Brush color = type switch
             {
-                LogType.Info => new SolidColorBrush(Color.FromRgb(75, 145, 219)),       // Light Blue
-                LogType.Warning => new SolidColorBrush(Color.FromRgb(219, 181, 75)),    // Light Yellow
-                LogType.Error => new SolidColorBrush(Color.FromRgb(219, 75, 75)),       // Light Red
-                LogType.Success => new SolidColorBrush(Color.FromRgb(75, 219, 116)),    // Light Green
+                LogType.Info => new SolidColorBrush(Color.FromRgb(75, 145, 219)),
+                LogType.Warning => new SolidColorBrush(Color.FromRgb(219, 181, 75)),
+                LogType.Error => new SolidColorBrush(Color.FromRgb(219, 75, 75)),
+                LogType.Success => new SolidColorBrush(Color.FromRgb(75, 219, 116)),
                 _ => Brushes.White
             };
+
             string prefix = ConsoleBlock.Inlines.Count > 0 ? "\n" : "";
+
             Run logEntry = new Run($"{prefix}> [{timestamp}] {tag} {message}")
             {
                 Foreground = color
             };
 
-            // Append
             ConsoleBlock.Inlines.Add(logEntry);
 
-            // Auto-scroll
             var scrollViewer = ConsoleBlock.Parent as ScrollViewer;
             scrollViewer?.ScrollToEnd();
         });
     }
+
 
 }
