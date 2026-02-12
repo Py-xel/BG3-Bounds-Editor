@@ -9,6 +9,8 @@ using LSLib.LS.Enums;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 using System.ComponentModel;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace BG3_Bounds_Editor;
 
@@ -18,6 +20,8 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
+        System.Globalization.CultureInfo.DefaultThreadCurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
+        System.Globalization.CultureInfo.DefaultThreadCurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
         InitializeComponent();
         LoadSettings();
     }
@@ -61,8 +65,7 @@ public partial class MainWindow : Window
 
             if (!Directory.Exists(publicPath))
             {
-                // LOG: ERROR HERE
-                //MessageBox.Show($"Folder not found:\n\n{publicPath}", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                LogToConsole($"Invalid folder: '{publicPath}' — Make sure to select the correct Data Folder!", LogType.Warning);
                 return;
             }
 
@@ -81,14 +84,12 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            // LOG: ERROR HERE
-            //MessageBox.Show($"Error loading projects: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            LogToConsole($"Error loading project: {ex.Message} — Did you select the correct Data Folder?", LogType.Error);
         }
     }
     private void ProjectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (ProjectComboBox.SelectedItem == null)
-            return;
+        if (ProjectComboBox.SelectedItem == null) return;
 
         string selectedProject = ProjectComboBox.SelectedItem.ToString()!;
         PopulateLSFDropdown(selectedProject);
@@ -101,12 +102,23 @@ public partial class MainWindow : Window
         try
         {
             string assetsPath = Path.Combine(MainDataPath, "Public", selectedProject, "Content");
-            if (!Directory.Exists(assetsPath)) return;
+
+            if (!Directory.Exists(assetsPath))
+            {
+                LogToConsole($"Content folder not found for project: {selectedProject}", LogType.Warning);
+                return;
+            }
 
             var lsfFiles = Directory.EnumerateFiles(assetsPath, "*.lsf", SearchOption.AllDirectories)
                 .Select(file => Path.GetFileName(file))
                 .OrderBy(name => name)
-                .ToList(); // Keep as a list
+                .ToList();
+
+            if (lsfFiles.Count == 0)
+            {
+                LogToConsole($"No .lsf files found in project: {selectedProject}", LogType.Warning);
+                return;
+            }
 
             foreach (string file in lsfFiles)
                 LSFComboBox.Items.Add(file);
@@ -114,9 +126,12 @@ public partial class MainWindow : Window
             if (LSFComboBox.Items.Count > 0)
                 LSFComboBox.SelectedIndex = 0;
         }
-        catch (Exception) { LSFComboBox.Items.Clear(); }
+        catch (Exception ex)
+        {
+            LSFComboBox.Items.Clear();
+            LogToConsole($"Error loading .lsf file(s): {ex.Message}", LogType.Error);
+        }
     }
-
     private void LSFSearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         string filter = LSFSearchBox.Text.ToLower();
@@ -140,15 +155,15 @@ public partial class MainWindow : Window
     /* USER SETTINGS */
     private void SaveSettings()
     {
-        var data = new Dictionary<string, string>
-        {
-            { "BG3 Mod Folder Path", PathTextBox.Text },
-            { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" }
-        };
+        var data = new Dictionary<string, object> // 'object' is the key here
+    {
+        { "BG3 Mod Folder Path", PathTextBox.Text },
+        { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" },
+        { "Keep .lsx after conversion", KeepLsxCheckBox.IsChecked ?? false } // Saves as actual boolean
+    };
 
         var options = new JsonSerializerOptions { WriteIndented = true };
-        string json = JsonSerializer.Serialize(data, options);
-        File.WriteAllText(_configPath, json);
+        File.WriteAllText(_configPath, JsonSerializer.Serialize(data, options));
     }
     private void LoadSettings()
     {
@@ -174,8 +189,16 @@ public partial class MainWindow : Window
 
                     PopulateProjectDropdown(mainPath, lastProject);
                 }
+
+                if (root.TryGetProperty("Keep .lsx after conversion", out JsonElement checkElement))
+                {
+                    KeepLsxCheckBox.IsChecked = checkElement.GetBoolean();
+                }
             }
-            catch { /* Handle corrupted JSON */ }
+            catch (Exception ex)
+            {
+                LogToConsole($"Could not load config.json: {ex.Message} — Delete config.json and restart the program!", LogType.Error);
+            }
         }
     }
 
@@ -201,31 +224,50 @@ public partial class MainWindow : Window
     }
     private void Save_Click(object sender, RoutedEventArgs e)
     {
+        string rawMin = MinBoundTextBox.Text;
+        string rawMax = MaxBoundTextBox.Text;
+
+        string trimmedMin = rawMin.Trim();
+        string trimmedMax = rawMax.Trim();
+
+        // Guard Clause
+        if (!IsInputValid(trimmedMin) || !IsInputValid(trimmedMax))
+        {
+            LogToConsole("Operation aborted: — Invalid input! Values must adhere to the following pattern: (e.g. -1.0 2.5 0).", LogType.Error);
+            return;
+        }
+
+        if (rawMin != trimmedMin || rawMax != trimmedMax)
+        {
+            LogToConsole("Trailing characters removed!", LogType.Info);
+        }
+
         string selectedProject = ProjectComboBox.SelectedItem.ToString();
         string selectedFile = LSFComboBox.SelectedItem.ToString();
         string lsfPath = Path.Combine(MainDataPath, "Public", selectedProject, "Content", selectedFile);
-
         string tempLsx = Path.ChangeExtension(lsfPath, ".lsx");
 
         try
         {
             ConvertLsfToLsxInternal(lsfPath, tempLsx);
-            EditLsxBounds(tempLsx, MinBoundTextBox.Text, MaxBoundTextBox.Text);
+
+            // Use the already trimmed variables
+            EditLsxBounds(tempLsx, trimmedMin, trimmedMax);
+
             ConvertLsxToLsfInternal(tempLsx, lsfPath);
 
-            // Delete .lsx if prompted
             if (KeepLsxCheckBox.IsChecked == false && File.Exists(tempLsx))
             {
                 File.Delete(tempLsx);
             }
-
-            // LOG: SUCCESS HERE
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error during processing: {ex.Message}");
+            LogToConsole($"Processing Error: {ex.Message}", LogType.Error);
         }
     }
+
+
     private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
     private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
 
@@ -247,83 +289,144 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"LSLib Error: {ex.Message}");
+            LogToConsole($"LSLib encountered an error: {ex.Message}", LogType.Error);
         }
     }
     private void ConvertLsxToLsfInternal(string inputPath, string outputPath)
     {
-        var loadParams = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3);
-        var conversionParams = new ResourceConversionParameters
+        var originalCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+        try
         {
-            LSF = LSFVersion.VerBG3Patch3,
-            LSX = LSXVersion.V4
-        };
+            // Force the conversion process to use dots for decimals
+            System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
 
-        Resource resource = ResourceUtils.LoadResource(inputPath, loadParams);
-        ResourceUtils.SaveResource(resource, outputPath, ResourceFormat.LSF, conversionParams);
+            var loadParams = ResourceLoadParameters.FromGameVersion(Game.BaldursGate3);
+            var conversionParams = new ResourceConversionParameters
+            {
+                LSF = LSFVersion.VerBG3Patch3,
+                LSX = LSXVersion.V4
+            };
+
+            // LSLib will now correctly parse '1.012' from the XML
+            Resource resource = ResourceUtils.LoadResource(inputPath, loadParams);
+            ResourceUtils.SaveResource(resource, outputPath, ResourceFormat.LSF, conversionParams);
+        }
+        catch (Exception ex)
+        {
+            LogToConsole($"LSLib encountered an error: {ex.Message}", LogType.Error);
+        }
+        finally
+        {
+            // Always restore the user's system culture
+            System.Threading.Thread.CurrentThread.CurrentCulture = originalCulture;
+        }
     }
     private void EditLsxBounds(string lsxPath, string minVal, string maxVal)
     {
-        XDocument doc = XDocument.Load(lsxPath);
-
-        // .lsf id must be "VisualBank" only!
-        var visualBankRegion = doc.Descendants("region")
-            .FirstOrDefault(r => (string)r.Attribute("id") == "VisualBank");
-
-        if (visualBankRegion == null)
+        try
         {
-            throw new Exception("This file is not a valid VisualBank resource.");
-        }
+            XDocument doc = XDocument.Load(lsxPath);
 
-        bool minUpdated = false;
-        bool maxUpdated = false;
+            // .lsf id must be "VisualBank" only!
+            var visualBankRegion = doc.Descendants("region")
+                .FirstOrDefault(r => (string)r.Attribute("id") == "VisualBank");
 
-        var attributes = doc.Descendants("attribute");
-        foreach (var attr in attributes)
-        {
-            string? id = attr.Attribute("id")?.Value;
-
-            if (id == "BoundsMin")
+            if (visualBankRegion == null)
             {
-                attr.SetAttributeValue("value", minVal);
-                minUpdated = true;
+                LogToConsole("Validation Failed: Region 'VisualBank' not found. This file might not contain visual data.", LogType.Error);
+                return;
             }
-            else if (id == "BoundsMax")
+
+            bool minUpdated = false;
+            bool maxUpdated = false;
+
+            var attributes = doc.Descendants("attribute");
+            foreach (var attr in attributes)
             {
-                attr.SetAttributeValue("value", maxVal);
-                maxUpdated = true;
+                string? id = attr.Attribute("id")?.Value;
+
+                if (id == "BoundsMin")
+                {
+                    attr.SetAttributeValue("value", minVal);
+                    minUpdated = true;
+                }
+                else if (id == "BoundsMax")
+                {
+                    attr.SetAttributeValue("value", maxVal);
+                    maxUpdated = true;
+                }
             }
-        }
 
-        if (!minUpdated || maxUpdated == false)
+            if (!minUpdated || !maxUpdated)
+            {
+                LogToConsole($"Could not find attributes [BoundsMin] and [BoundsMax] in: {Path.GetFileName(lsxPath)}", LogType.Error);
+                return;
+            }
+
+            doc.Save(lsxPath);
+
+            string fileName = Path.GetFileName(lsxPath).Replace(".lsx", ".lsf");
+            LogToConsole($"Updated: {fileName}" + $"\n    > New BoundsMin: [{minVal}]\n    > new BoundsMax: [{maxVal}]", LogType.Success);
+        }
+        catch (Exception ex)
         {
-            throw new Exception("Could not find BoundsMin or BoundsMax attributes in this file.");
+            LogToConsole($"An unexpected error occurred while editing: {ex.Message}", LogType.Error);
         }
-
-        doc.Save(lsxPath);
     }
 
     /* INPUT SANITIZATION */
+    private bool IsInputValid(string input)
+    {
+        string pattern = @"^-?\d+(\.\d+)? -?\d+(\.\d+)? -?\d+(\.\d+)?$";
+        return Regex.IsMatch(input.Trim(), pattern);
+    }
     private void BoundsTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
     {
-        // The \- escapes the hyphen so it's treated as a character, not a range
-        Regex regex = new Regex("[^0-9.\\-\\s]+");
+        // Block any character that isn't a digit, dot, hyphen, or space
+        Regex regex = new Regex("[^0-9.\\- ]+");
         e.Handled = regex.IsMatch(e.Text);
     }
-    private void BoundsTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+    private void BoundsTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.DataObject.GetDataPresent(DataFormats.Text))
+        // Explicitly allow the space bar even if PreviewTextInput misses it
+        if (e.Key == Key.Space)
         {
-            string text = (string)e.DataObject.GetData(DataFormats.Text);
-
-            // Convert any European-style commas to dots before validation
-            string sanitized = text.Replace(',', '.');
-
-            Regex regex = new Regex("[^0-9.\\-\\s]+");
-            if (regex.IsMatch(sanitized))
-            {
-                e.CancelCommand();
-            }
+            e.Handled = false;
         }
     }
+
+    /* LOGGING */
+    public enum LogType { Info, Warning, Error, Success }
+    private void LogToConsole(string message, LogType type = LogType.Info)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            string timestamp = DateTime.Now.ToString("HH:mm:ss");
+
+            // Define the Label and Color based on type
+            string tag = $"[{type.ToString().ToUpper()}]";
+
+            Brush color = type switch
+            {
+                LogType.Info => new SolidColorBrush(Color.FromRgb(75, 145, 219)),       // Light Blue
+                LogType.Warning => new SolidColorBrush(Color.FromRgb(219, 181, 75)),    // Light Yellow
+                LogType.Error => new SolidColorBrush(Color.FromRgb(219, 75, 75)),       // Light Red
+                LogType.Success => new SolidColorBrush(Color.FromRgb(75, 219, 116)),    // Light Green
+                _ => Brushes.White
+            };
+            string prefix = ConsoleBlock.Inlines.Count > 0 ? "\n" : "";
+            Run logEntry = new Run($"{prefix}> [{timestamp}] {tag} {message}")
+            {
+                Foreground = color
+            };
+
+            // Append
+            ConsoleBlock.Inlines.Add(logEntry);
+
+            // Auto-scroll
+            var scrollViewer = ConsoleBlock.Parent as ScrollViewer;
+            scrollViewer?.ScrollToEnd();
+        });
+    }
+
 }
