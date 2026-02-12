@@ -1,4 +1,109 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- #region GLOBALS -->
+
+    <!-- COLORS -->
+    <Color x:Key="Colors.White">#ffffff</Color>
+    <Color x:Key="Colors.LightGray">#d0d0d0</Color>
+    <Color x:Key="Colors.Gray">#4e4e52</Color>
+    <Color x:Key="Colors.DarkGray">#2d2d30</Color>
+    <Color x:Key="Colors.Black">#1e1e1e</Color>
+    <Color x:Key="Colors.NeonGreen">#adff2f</Color>
+    <Color x:Key="Colors.LightGreen">#8acc25</Color>
+
+    <!-- BRUSHES -->
+    <SolidColorBrush x:Key="Brushes.White" Color="{StaticResource Colors.White}" />
+    <SolidColorBrush x:Key="Brushes.LightGray" Color="{StaticResource Colors.LightGray}" />
+    <SolidColorBrush x:Key="Brushes.Gray" Color="{StaticResource Colors.Gray}" />
+    <SolidColorBrush x:Key="Brushes.DarkGray" Color="{StaticResource Colors.DarkGray}" />
+    <SolidColorBrush x:Key="Brushes.Black" Color="{StaticResource Colors.Black}" />
+    <SolidColorBrush x:Key="Brushes.NeonGreen" Color="{StaticResource Colors.NeonGreen}" />
+    <SolidColorBrush x:Key="Brushes.LightGreen" Color="{StaticResource Colors.LightGreen}" />
+
+    <!-- #endregion -->
+
+    <!-- #region BORDER STYLES -->
+
+    <!-- Border.Base -->
+    <Style x:Key="Border.Base" TargetType="Border">
+        <Setter Property="Background" Value="#ff2d2d30" />
+        <Setter Property="BorderBrush" Value="#ff3e3e42" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Height" Value="30" />
+    </Style>
+
+    <!-- Border.Button -->
+    <Style x:Key="Border.Button" TargetType="Border">
+        <Setter Property="Background" Value="#ff3e3e42" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="BorderBrush" Value="#ff4e4e52" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <!-- #endregion -->
+
+    <!-- #region TEXT BLOCK STYLES -->
+
+    <!-- TextBlock.Title -->
+    <Style x:Key="TextBlock.Title" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Bahnschrift SemiBold"/>
+        <Setter Property="FontSize" Value="14px"/>
+        <Setter Property="FontStyle" Value="Normal"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{StaticResource Brushes.LightGray}"/>
+        <Setter Property="Margin" Value="5,3,0,1"/>
+    </Style>
+
+    <!-- TextBlock.Description -->
+    <Style x:Key="TextBlock.Description" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Franklin Gothic Book"/>
+        <Setter Property="FontSize" Value="12px"/>
+        <Setter Property="FontStyle" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource Brushes.LightGray}"/>
+        <Setter Property="Margin" Value="0,0,0,5"/>
+    </Style>
+    
+    <!-- TextBlock.Icon -->
+    <Style x:Key="TextBlock.Icon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource Brushes.White}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <!-- #endregion -->
+
+    <!-- #region TEXT BOX STYLES -->
+
+    <!-- TextBox.Path -->
+    <Style x:Key="TextBox.Path" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource Brushes.White}"/>
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Margin" Value="5,3,0,2"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="0,8"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+    </Style>
+
+    <!-- TextBox.Bounds -->
+    <Style x:Key="TextBox.Bounds" TargetType="TextBox">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource Brushes.White}"/>
+        <Setter Property="Height" Value="35"/>
+        <Setter Property="Margin" Value="5,3,0,2"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="0,8"/>
+    </Style>
+    
+    <!-- #endregion -->
+
     <!-- #region BUTTON STYLES -->
 
     <!-- Button.Base -->
@@ -181,8 +286,8 @@
     </Style>
 
     <!-- #endregion -->
-    
-    <!-- #region INFO ICON -->
+
+    <!-- #region INFO ICON STYLES -->
     <Style x:Key="ToolTip.Info" TargetType="ToolTip">
         <Setter Property="Background" Value="#FF2D2D30"/>
         <Setter Property="Foreground" Value="White"/>
@@ -194,10 +299,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
-                    <Border Background="{TemplateBinding Background}" 
-                        BorderBrush="{TemplateBinding BorderBrush}" 
-                        BorderThickness="1" 
-                        CornerRadius="4">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1">
                         <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
@@ -223,5 +325,51 @@
     </Style>
 
     <!--  #endregion -->
+
+    <!--#region CHECKBOX STYLES -->
+    <Style x:Key="CheckBox.Base" TargetType="CheckBox">
+        <!-- Existing Setters -->
+        <Setter Property="Background" Value="{StaticResource Brushes.DarkGray}" />
+        <Setter Property="Foreground" Value="{StaticResource Brushes.LightGray}" />
+        <Setter Property="FontFamily" Value="Bahnschrift Light" />
+        <Setter Property="FontSize" Value="11px" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="IsChecked" Value="False" />
+        <Setter Property="Margin" Value="0,0,0,5" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                        <StackPanel Orientation="Horizontal">
+                            <Border x:Name="checkBoxBorder" Width="16" Height="16" Background="{TemplateBinding Background}" BorderBrush="{StaticResource Brushes.LightGreen}" BorderThickness="1" CornerRadius="0">
+                                <Path x:Name="optionMark" Data="M 0,4 L 3,7 L 9,0" Stroke="{StaticResource Brushes.LightGreen}" StrokeThickness="2" Margin="2,2,2,3.5" Visibility="Collapsed" Stretch="Uniform" />
+                            </Border>
+                            <ContentPresenter x:Name="contentPresenter" Margin="8,0,0,0" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Focusable="False" RecognizesAccessKey="True"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter TargetName="optionMark" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="optionMark" Property="Stroke" Value="#adff2f" />
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="checkBoxBorder" Property="Background" Value="#444444" />
+                            <Setter TargetName="checkBoxBorder" Property="BorderBrush" Value="#adff2f" />
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter TargetName="templateRoot" Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!--#endregion-->
 
 </ResourceDictionary>
