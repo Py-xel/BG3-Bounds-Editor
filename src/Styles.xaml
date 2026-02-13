@@ -150,6 +150,30 @@
         </Setter>
     </Style>
 
+    <!-- Button.Swap -->
+    <Style x:Key="Button.Swap" TargetType="Button">
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="SwapBorder" Background="{TemplateBinding Background}" CornerRadius="2">
+                        <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Style="{StaticResource TextBlock.Icon}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="SwapBorder" Property="Background" Value="#FF4E4E52"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="SwapBorder" Property="Background" Value="#FF3A3A3C"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--#endregion-->
 
     <!-- #region COMBO BOX STYLES -->
