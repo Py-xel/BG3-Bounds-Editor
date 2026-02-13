@@ -93,11 +93,11 @@ public partial class MainWindow : Window
 
         string selectedProject = ProjectComboBox.SelectedItem.ToString()!;
         PopulateLSFDropdown(selectedProject);
-        UpdateConfig();
+        SaveSettings();
     }
     private void KeepLsxCheckBox_Changed(object sender, RoutedEventArgs e)
     {
-        UpdateConfig();
+        SaveSettings();
     }
     private void PopulateLSFDropdown(string selectedProject)
     {
@@ -115,7 +115,7 @@ public partial class MainWindow : Window
             }
 
             var lsfFiles = Directory.EnumerateFiles(assetsPath, "*.lsf", SearchOption.AllDirectories)
-                .Select(file => Path.GetFileName(file))
+                .Select(file => Path.GetRelativePath(assetsPath, file))
                 .OrderBy(name => name)
                 .ToList();
 
@@ -158,52 +158,95 @@ public partial class MainWindow : Window
     }
 
     /* USER SETTINGS */
+    private bool _boundsSwapped = false;
+    private void SwapBoundsButton_Click(object sender, RoutedEventArgs e)
+    {
+        _boundsSwapped = !_boundsSwapped;
+        SwapBoundsControls();
+        SaveSettings();
+    }
+    private void SwapBoundsControls()
+    {
+        if (BoundsStackPanel.Children.Count < 4)
+            return;
+
+        var minLabel = BoundsStackPanel.Children[0];
+        var minBox = BoundsStackPanel.Children[1];
+        var maxLabel = BoundsStackPanel.Children[2];
+        var maxBox = BoundsStackPanel.Children[3];
+
+        BoundsStackPanel.Children.Clear();
+
+        BoundsStackPanel.Children.Add(maxLabel);
+        BoundsStackPanel.Children.Add(maxBox);
+        BoundsStackPanel.Children.Add(minLabel);
+        BoundsStackPanel.Children.Add(minBox);
+    }
     private void SaveSettings()
     {
-        var data = new Dictionary<string, object>
-    {
-        { "BG3 Mod Folder Path", PathTextBox.Text },
-        { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" },
-        { "Keep .lsx after conversion", KeepLsxCheckBox.IsChecked ?? false }
-    };
+        try
+        {
+            var configData = new Dictionary<string, object>
+        {
+            { "BG3 Mod Folder Path", PathTextBox.Text },
+            { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" },
+            { "Keep .lsx after conversion", KeepLsxCheckBox.IsChecked ?? false },
+            { "Bounds Swapped", _boundsSwapped }
+        };
 
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        File.WriteAllText(_configPath, JsonSerializer.Serialize(data, options));
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string json = JsonSerializer.Serialize(configData, options);
+
+            // Use the centralized path variable
+            File.WriteAllText(_configPath, json);
+        }
+        catch (Exception ex)
+        {
+            LogToConsole($"Failed to save settings: {ex.Message}", LogType.Warning);
+        }
     }
     private void LoadSettings()
     {
-        if (File.Exists(_configPath))
+        if (!File.Exists(_configPath)) return;
+
+        try
         {
-            try
+            string json = File.ReadAllText(_configPath);
+            using JsonDocument doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+
+            if (root.TryGetProperty("BG3 Mod Folder Path", out JsonElement pathElement))
             {
-                string json = File.ReadAllText(_configPath);
-                using JsonDocument doc = JsonDocument.Parse(json);
-                var root = doc.RootElement;
+                string mainPath = pathElement.GetString() ?? "";
+                PathTextBox.Text = mainPath;
 
-                if (root.TryGetProperty("BG3 Mod Folder Path", out JsonElement pathElement))
+                string lastProject = "";
+                if (root.TryGetProperty("Last Selected Project", out JsonElement projectElement))
                 {
-                    string mainPath = pathElement.GetString() ?? "";
-                    PathTextBox.Text = mainPath;
-
-                    // Load projects after setting the text
-                    string lastProject = "";
-                    if (root.TryGetProperty("Last Selected Project", out JsonElement projectElement))
-                    {
-                        lastProject = projectElement.GetString() ?? "";
-                    }
-
-                    PopulateProjectDropdown(mainPath, lastProject);
+                    lastProject = projectElement.GetString() ?? "";
                 }
 
-                if (root.TryGetProperty("Keep .lsx after conversion", out JsonElement checkElement))
+                PopulateProjectDropdown(mainPath, lastProject);
+            }
+
+            if (root.TryGetProperty("Keep .lsx after conversion", out JsonElement checkElement))
+            {
+                KeepLsxCheckBox.IsChecked = checkElement.GetBoolean();
+            }
+
+            // Fixed Casing: "Bounds Swapped" to match SaveSettings
+            if (root.TryGetProperty("Bounds Swapped", out JsonElement swapElement))
+            {
+                _boundsSwapped = swapElement.GetBoolean();
+                if (_boundsSwapped)
                 {
-                    KeepLsxCheckBox.IsChecked = checkElement.GetBoolean();
+                    SwapBoundsControls();
                 }
             }
-            catch (Exception ex)
-            {
-                LogToConsole($"Could not load config.json: {ex.Message} — Delete config.json and restart the program!", LogType.Error);
-            }
+        }
+        catch (Exception ex)
+        {
+            LogToConsole($"Could not load config: {ex.Message}", LogType.Error);
         }
     }
 
@@ -270,32 +313,6 @@ public partial class MainWindow : Window
     }
     private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
     private void Minimize_Click(object sender, RoutedEventArgs e) => this.WindowState = WindowState.Minimized;
-
-    /* SAVING */
-    private void UpdateConfig()
-    {
-        try
-        {
-            // Use a Dictionary to allow keys with spaces/special characters
-            var configData = new Dictionary<string, object>
-        {
-            { "BG3 Mod Folder Path", PathTextBox.Text },
-            { "Last Selected Project", ProjectComboBox.SelectedItem?.ToString() ?? "" },
-            { "Keep .lsx after conversion", KeepLsxCheckBox.IsChecked ?? false },
-        };
-
-            // Serialize with Indented formatting for readability
-            string json = JsonSerializer.Serialize(configData, new JsonSerializerOptions { WriteIndented = true });
-
-            // Write to the file path (ensure this matches your loading path)
-            File.WriteAllText("config.json", json);
-        }
-        catch (Exception ex)
-        {
-            LogToConsole($"Failed to update config.json: {ex.Message}", LogType.Warning);
-        }
-    }
-
 
     /* CONVERSION */
     private void ConvertLsfToLsxInternal(string inputPath, string outputPath)
@@ -436,7 +453,7 @@ public partial class MainWindow : Window
         }
         catch (Exception)
         {
- 
+
         }
 
         Dispatcher.Invoke(() =>
@@ -463,6 +480,4 @@ public partial class MainWindow : Window
             scrollViewer?.ScrollToEnd();
         });
     }
-
-
 }
