@@ -15,20 +15,20 @@ _A mesh bounds editor for Larian Studios’ Divinity Engine 4.0, developed for B
 
 ## :page_with_curl: Features
 
-**BG3 Bounds Editor** is a streamlined interface for modifying mesh bounds in `.lsf` binary files. It utilizes LSLib to automatically convert a selected `.lsf` to `.xml` (.lsx), apply the necessary changes, then reconvert.
-
 <img src="src/bg3_bounds_editor_example.png">
+
+**BG3 Bounds Editor** is a streamlined interface for modifying mesh bounds in `.lsf` binary files. It utilizes <a href="https://github.com/Norbyte/lslib">**LSLib**</a> to automatically convert a selected `.lsf` to `.xml` (.lsx), apply the necessary changes, then reconvert.
 
 ## :scroll: Usage
 
 The **_Baldur's Gate 3 Data Folder_** field requires the default **Data** path of the game.
 
-On Steam, the default data path is: `C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data`  
+On Steam, the default data path is: `C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data`
 On GOG, the default data path is: `C:\Program Files (x86)\GOG Galaxy\Games\Baldurs Gate 3\Data`
 
 The **_Project Folder_** lists all the available projects, excluding the ones made by Larian.
 
-The **_.lsf file_** dropdown then lists all the `.lsf` files found inside the following path:  
+The **_.lsf file_** dropdown then lists all the `.lsf` files found inside the following path:
 `\Steam\steamapps\common\Baldurs Gate 3\Data\Public\<YOURMOD>\Content\`
 
 > [!CAUTION]
@@ -40,7 +40,7 @@ The **_.lsf file_** dropdown then lists all the `.lsf` files found inside the fo
 
 By default, the bounds attributes of a `.lsx` file look like this:
 
-```xml
+```
 <attribute id="BoundsMin" type="fvec3" value="-1.234 0.12 2.389" />
 <attribute id="BoundsMax" type="fvec3" value="1.234 0.12 -2.389" />
 ```
