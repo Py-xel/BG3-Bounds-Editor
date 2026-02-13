@@ -51,7 +51,7 @@ Additionally, the following two files are also created:
 
 | File          | Description                                                                                    |
 | :------------ | :--------------------------------------------------------------------------------------------- |
-| `config.json` | Stores currently selected (DataPath, ProjectPath, lsxPreservation) which is loaded on startup. |
+| `config.json` | Stores currently selected (DataPath, ProjectPath, lsxPreservation, SwappedFields) which is loaded on startup. |
 | `log.txt`     | Stores all the log data.                                                                       |
 
 ## :clipboard: Requirements
