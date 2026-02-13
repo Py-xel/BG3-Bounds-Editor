@@ -138,13 +138,13 @@
                         <!-- Min Bound -->
                         <TextBlock Text="BoundsMin" Style="{StaticResource TextBlock.Description}"/>
                         <Border Style="{StaticResource Border.Base}" Margin="0,0,0,10">
-                            <TextBox x:Name="MinBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" PreviewKeyDown="BoundsTextBox_PreviewKeyDown"/>
+                            <TextBox x:Name="MinBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" PreviewKeyDown="BoundsTextBox_PreviewKeyDown" DataObject.Pasting="BoundsTextBox_Paste"/>
                         </Border>
 
                         <!-- Max Bound -->
                         <TextBlock Text="BoundsMax" Style="{StaticResource TextBlock.Description}"/>
                         <Border Style="{StaticResource Border.Base}" Margin="0,0,0,10">
-                            <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" PreviewKeyDown="BoundsTextBox_PreviewKeyDown"/>
+                            <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" PreviewKeyDown="BoundsTextBox_PreviewKeyDown" DataObject.Pasting="BoundsTextBox_Paste"/>
                         </Border>
                     </StackPanel>
 

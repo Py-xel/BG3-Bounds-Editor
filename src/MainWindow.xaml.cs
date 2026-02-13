@@ -437,6 +437,19 @@ public partial class MainWindow : Window
             e.Handled = false;
         }
     }
+    private void BoundsTextBox_Paste(object sender, DataObjectPastingEventArgs e)
+    {
+        if (e.DataObject.GetDataPresent(DataFormats.Text))
+        {
+            string text = (string)e.DataObject.GetData(DataFormats.Text);
+
+            string cleanedText = text.Replace(";", "");
+
+            DataObject newObject = new DataObject();
+            newObject.SetData(DataFormats.Text, cleanedText);
+            e.DataObject = newObject;
+        }
+    }
 
     /* LOGGING */
     public enum LogType { Info, Warning, Error, Success }
