@@ -15,9 +15,9 @@ _A mesh bounds editor for Larian Studios’ Divinity Engine 4.0, developed for B
 
 ## :page_with_curl: Features
 
-<img src="src/bg3_bounds_editor_example.png">
-
 **BG3 Bounds Editor** is a streamlined interface for modifying mesh bounds in `.lsf` binary files. It utilizes LSLib to automatically convert a selected `.lsf` to `.xml` (.lsx), apply the necessary changes, then reconvert.
+
+<img src="src/bg3_bounds_editor_example.png">
 
 ## :scroll: Usage
 
