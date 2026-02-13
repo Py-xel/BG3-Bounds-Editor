@@ -23,12 +23,12 @@ _A mesh bounds editor for Larian Studios’ Divinity Engine 4.0, developed for B
 
 The **_Baldur's Gate 3 Data Folder_** field requires the default **Data** path of the game.
 
-On Steam, the default data path is: `C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data`
+On Steam, the default data path is: `C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data`  
 On GOG, the default data path is: `C:\Program Files (x86)\GOG Galaxy\Games\Baldurs Gate 3\Data`
 
 The **_Project Folder_** lists all the available projects, excluding the ones made by Larian.
 
-The **_.lsf file_** dropdown then lists all the `.lsf` files found inside the following path:
+The **_.lsf file_** dropdown then lists all the `.lsf` files found inside the following path:  
 `\Steam\steamapps\common\Baldurs Gate 3\Data\Public\<YOURMOD>\Content\`
 
 > [!CAUTION]
