@@ -124,11 +124,17 @@
                 <!-- Bounds Editing -->
                 <Grid Grid.Row="9" Margin="100,50,100,0" Width="350">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="75*"/>
+                        <ColumnDefinition Width="15*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Column="0">
+                    <!-- Swap Button -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Button x:Name="SwapBoundsButton" Style="{StaticResource Button.Swap}" Click="SwapBoundsButton_Click"/>
+                    </StackPanel>
+
+                    <StackPanel x:Name="BoundsStackPanel" Grid.Column="1">
                         <!-- Min Bound -->
                         <TextBlock Text="BoundsMin" Style="{StaticResource TextBlock.Description}"/>
                         <Border Style="{StaticResource Border.Base}" Margin="0,0,0,10">
@@ -137,13 +143,13 @@
 
                         <!-- Max Bound -->
                         <TextBlock Text="BoundsMax" Style="{StaticResource TextBlock.Description}"/>
-                        <Border Style="{StaticResource Border.Base}">
+                        <Border Style="{StaticResource Border.Base}" Margin="0,0,0,10">
                             <TextBox x:Name="MaxBoundTextBox" Style="{StaticResource TextBox.Edit}" PreviewTextInput="BoundsTextBox_PreviewTextInput" PreviewKeyDown="BoundsTextBox_PreviewKeyDown"/>
                         </Border>
                     </StackPanel>
 
                     <!-- Side Buttons -->
-                    <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Bottom">
+                    <StackPanel Grid.Column="2" Margin="5,0,0,10" VerticalAlignment="Bottom">
                         <!-- Info Icon -->
                         <Grid Width="35" Height="30" Margin="0,0,0,28" Background="Transparent" ToolTipService.Placement="Center" ToolTipService.VerticalOffset="-30">
                             <Grid.ToolTip>
@@ -169,7 +175,7 @@
                         </Button>
                     </StackPanel>
                 </Grid>
-                
+
                 <!-- LOG -->
                 <Grid Grid.Row="10" Margin="0,20,0,0">
                     <Grid.RowDefinitions>
