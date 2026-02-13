@@ -40,7 +40,7 @@ The **_.lsf file_** dropdown then lists all the `.lsf` files found inside the fo
 
 By default, the bounds attributes of a `.lsx` file look like this:
 
-```
+```xml
 <attribute id="BoundsMin" type="fvec3" value="-1.234 0.12 2.389" />
 <attribute id="BoundsMax" type="fvec3" value="1.234 0.12 -2.389" />
 ```
