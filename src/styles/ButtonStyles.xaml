@@ -1,0 +1,77 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Import Brushes and TextBlock styles for Button.Swap -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Brushes.xaml" />
+        <ResourceDictionary Source="TextBlockStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Button.Base -->
+    <Style x:Key="Button.Base" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Width" Value="45"/>
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="BtnBorder" Background="{TemplateBinding Background}" >
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Button.Minimize -->
+    <Style x:Key="Button.Minimize" TargetType="Button" BasedOn="{StaticResource Button.Base}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#3F3F41"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Button.Close -->
+    <Style x:Key="Button.Close" TargetType="Button" BasedOn="{StaticResource Button.Base}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#E81123"/>
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="0,7,0,0">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Button.Swap -->
+    <Style x:Key="Button.Swap" TargetType="Button" BasedOn="{StaticResource Button.Base}">
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="SwapBorder" Background="{TemplateBinding Background}" CornerRadius="2">
+                        <TextBlock Text="&#xE8CB;" FontFamily="Segoe MDL2 Assets" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" Style="{StaticResource TextBlock.Icon}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="SwapBorder" Property="Background" Value="#FF4E4E52"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="SwapBorder" Property="Background" Value="#FF3A3A3C"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

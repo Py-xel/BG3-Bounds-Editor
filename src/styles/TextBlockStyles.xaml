@@ -1,0 +1,38 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Import Brushes -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Brushes.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- TextBlock.Title -->
+    <Style x:Key="TextBlock.Title" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Bahnschrift SemiBold"/>
+        <Setter Property="FontSize" Value="14px"/>
+        <Setter Property="FontStyle" Value="Normal"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{StaticResource Brushes.LightGray}"/>
+        <Setter Property="Margin" Value="5,3,0,1"/>
+    </Style>
+
+    <!-- TextBlock.Description -->
+    <Style x:Key="TextBlock.Description" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Franklin Gothic Book"/>
+        <Setter Property="FontSize" Value="12px"/>
+        <Setter Property="FontStyle" Value="Normal"/>
+        <Setter Property="Foreground" Value="{StaticResource Brushes.LightGray}"/>
+        <Setter Property="Margin" Value="0,0,0,5"/>
+    </Style>
+
+    <!-- TextBlock.Icon -->
+    <Style x:Key="TextBlock.Icon" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="{StaticResource Brushes.White}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+</ResourceDictionary>

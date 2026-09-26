@@ -1,0 +1,21 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Import Colors -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Colors.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- BRUSHES -->
+    <SolidColorBrush x:Key="Brushes.White" Color="{StaticResource Colors.White}" />
+    <SolidColorBrush x:Key="Brushes.LightGray" Color="{StaticResource Colors.LightGray}" />
+    <SolidColorBrush x:Key="Brushes.Gray" Color="{StaticResource Colors.Gray}" />
+    <SolidColorBrush x:Key="Brushes.MediumGray" Color="{StaticResource Colors.MediumGray}" />
+    <SolidColorBrush x:Key="Brushes.DarkGray" Color="{StaticResource Colors.DarkGray}" />
+    <SolidColorBrush x:Key="Brushes.VeryDarkGray" Color="{StaticResource Colors.VeryDarkGray}" />
+    <SolidColorBrush x:Key="Brushes.Black" Color="{StaticResource Colors.Black}" />
+    <SolidColorBrush x:Key="Brushes.PitchBlack" Color="{StaticResource Colors.PitchBlack}" />
+    <SolidColorBrush x:Key="Brushes.NeonGreen" Color="{StaticResource Colors.NeonGreen}" />
+    <SolidColorBrush x:Key="Brushes.LightGreen" Color="{StaticResource Colors.LightGreen}" />
+    <SolidColorBrush x:Key="Brushes.DarkGreen" Color="{StaticResource Colors.DarkGreen}" />
+
+</ResourceDictionary>
