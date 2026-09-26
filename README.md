@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img width="140" alt="BG3 Bounds Editor Logo" src="src/assets/bg3_bounds_editor_logo.png">
+  <img width="180" alt="BG3 Bounds Editor Logo" src="src/assets/bg3_bounds_editor_logo.png">
 
 # BG3 Bounds Editor
 
