@@ -1,68 +1,68 @@
-<p align="center">
-  <a href="" rel="noopener">
- <img src="src/bg3_bounds_editor_banner.png" alt="Project logo"></a>
-</p>
-
 <div align="center">
 
-_A mesh bounds editor for Larian Studios’ Divinity Engine 4.0, developed for Baldur's Gate 3 mod authors._
+  <img width="140" alt="BG3 Bounds Editor Logo" src="src/assets/bg3_bounds_editor_logo.png">
 
-<picture>![Status](https://img.shields.io/badge/Status-Active-0db556)</picture> <picture>![Divinity Engine](https://img.shields.io/badge/Divinity_Engine-4%2E0-b5960d)</picture> <picture>
+# BG3 Bounds Editor
+
+<picture>![Status](https://img.shields.io/badge/Status-Active-0db556)</picture> <picture>![Divinity Engine](https://img.shields.io/badge/Divinity_Engine-4%2E0-b5960d)</picture>
 
 </div>
 
-<p><p/>
+A mesh bounds editor for Larian Studios’ Divinity Engine 4.0, developed for Baldur's Gate 3 mod authors.
 
-## :page_with_curl: Features
+![Example](src/assets/bg3_bounds_editor_example.png)
 
-<img src="src/bg3_bounds_editor_example.png">
+## Features
 
-**BG3 Bounds Editor** is a streamlined interface for modifying mesh bounds in `.lsf` binary files. It utilizes <a href="https://github.com/Norbyte/lslib">**LSLib**</a> to automatically convert a selected `.lsf` to `.xml` (.lsx), apply the necessary changes, then reconvert.
+**BG3 Bounds Editor** provides a streamlined interface for modifying mesh bounds in `.lsf` binary files. It utilizes **[LSLib](https://github.com/Norbyte/lslib)** to automatically convert a selected `.lsf` file to `.lsx`, apply the necessary changes, and then convert it back.
 
-## :scroll: Usage
+## Usage
 
-The **_Baldur's Gate 3 Data Folder_** field requires the default **Data** path of the game.
+The **Baldur's Gate 3 Data Folder** field requires the game's `Data` folder path.
 
-On Steam, the default data path is: `C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data`  
-On GOG, the default data path is: `C:\Program Files (x86)\GOG Galaxy\Games\Baldurs Gate 3\Data`
+The default data paths are:
 
-The **_Project Folder_** lists all the available projects, excluding the ones made by Larian.
+- `C:\Program Files (x86)\Steam\steamapps\common\Baldurs Gate 3\Data` on Steam.
+- `C:\Program Files (x86)\GOG Galaxy\Games\Baldurs Gate 3\Data` on GOG.
 
-The **_.lsf file_** dropdown then lists all the `.lsf` files found inside the following path:  
-`\Steam\steamapps\common\Baldurs Gate 3\Data\Public\<YOURMOD>\Content\`
+The **Project Folder** lists all available projects, excluding those created by **[Larian Studios](https://larian.com)**.
+
+The **.lsf file** dropdown then lists all `.lsf` files found within the following path:
+
+`<DataPath>\Public\<YOURMOD>\Content\`
 
 > [!CAUTION]
-> Any `.lsf` file which is not in that directory is invalid, and will **NOT** be displayed!
+> Any `.lsf` file that is not located in that directory is considered invalid and **will NOT be displayed**!
 >
-> Non-mesh `.lsf` files, like VisualEffects, are not convertable!
+> Non-mesh `.lsf` files, such as VisualEffects, are not convertible!
 
 ---
 
-By default, the bounds attributes of a `.lsx` file looks like this:
+By default, the bounds attributes of an `.lsx` file look like this:
 
 ```xml
 <attribute id="BoundsMin" type="fvec3" value="-1.234 0.12 2.389" />
 <attribute id="BoundsMax" type="fvec3" value="1.234 0.12 -2.389" />
 ```
 
-The values are space-separated and use dots as a decimal point. The **BoundsMin** and **BoundsMax** fields of the editor must adhere to these same rules!
+The values are space-separated and use a dot as the decimal separator. The `BoundsMin` and `BoundsMax` fields in the editor must follow these same rules.
 
-Additionally, the following two files are also created:
+Additionally, the following two files are created:
 
-| File          | Description                                                                                    |
-| :------------ | :--------------------------------------------------------------------------------------------- |
-| `config.json` | Stores currently selected (DataPath, ProjectPath, lsxPreservation, SwappedFields) which is loaded on startup. |
-| `log.txt`     | Stores all the log data.                                                                       |
+| File          | Description                                                                                                                          |
+| :------------ | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `config.json` | Stores the currently selected `DataPath`, `ProjectPath`, `lsxPreservation`, and `SwappedFields` values, which are loaded on startup. |
+| `log.txt`     | Stores all log data.                                                                                                                 |
 
-## :clipboard: Requirements
+## Requirements
 
 | Dependency  | Link                                                                                  |
 | :---------- | :------------------------------------------------------------------------------------ |
-| `.NET 8.0^` | https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.418/dotnet-sdk-8.0.418-win-x64.exe |
+| `.NET 8.0+` | https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.418/dotnet-sdk-8.0.418-win-x64.exe |
 
-## :package: Installation & Build
+## Installation & Build
 
-Download the **<a href="https://github.com/Py-xel/BG3-Bounds-Editor/releases">latest release</a>** or build the project by cloning:
+You can download the latest release **[here](https://github.com/Py-xel/BG3-Bounds-Editor/releases)** or build the project by cloning the repository:
 
 ```bash
 git clone https://github.com/Py-xel/BG3-Bounds-Editor.git
