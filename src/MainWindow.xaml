@@ -6,15 +6,24 @@
         xmlns:local="clr-namespace:BG3_Bounds_Editor"
         mc:Ignorable="d"
         Title="BG3 Bounds Editor" Height="600" Width="850"
-        ResizeMode="NoResize"
+        MinHeight="600"
+        MinWidth="650"
+        ResizeMode="CanResizeWithGrip"
         WindowStyle="None"
         AllowsTransparency="True"
-        Background="{x:Null}">
+        Background="{x:Null}" RenderTransformOrigin="0.5,0.5">
 
-    <Border Margin="15" CornerRadius="8" Background="#FF1E1E1E" BorderBrush="#8acc25" BorderThickness="1">
+    <!-- RESIZE GRIP -->
+    <Window.Resources>
+        <Style TargetType="{x:Type ResizeGrip}" BasedOn="{StaticResource ResizeGrip.Base}" />
+    </Window.Resources>
+
+    <Border Margin="15" CornerRadius="8" Background="{StaticResource Brushes.Black}" BorderBrush="{StaticResource Brushes.NeonGreen}" BorderThickness="1">
+
         <Border.Effect>
-            <DropShadowEffect Color="#ADFF2F" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
+            <DropShadowEffect Color="{StaticResource Colors.NeonGreen}" BlurRadius="20" ShadowDepth="0" Opacity="0.3"/>
         </Border.Effect>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="32"/>
@@ -22,11 +31,11 @@
             </Grid.RowDefinitions>
 
             <!-- TITLE BAR -->
-            <Border Grid.Row="0" Background="#FF2D2D30" CornerRadius="7,7,0,0" MouseDown="TitleBar_MouseDown">
+            <Border Grid.Row="0" Background="{StaticResource Brushes.DarkGray}" CornerRadius="7,7,0,0" MouseDown="TitleBar_MouseDown">
                 <Grid>
                     <!-- LOGO & TITLE -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="7,0,0,0">
-                        <Image Source="/bg3_bounds_editor_logo.png" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image Source="/bg3_bounds_editor_logo.ico" Width="20" Height="20" RenderOptions.BitmapScalingMode="HighQuality" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="BG3 Bounds Editor" Style="{StaticResource TextBlock.Title}"/>
                     </StackPanel>
                     <!-- WINDOW CONTROL BUTTONS -->
@@ -77,7 +86,7 @@
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter TargetName="DirBorder" Property="Background" Value="#FF4E4E52"/>
+                                        <Setter TargetName="DirBorder" Property="Background" Value="{StaticResource Brushes.MediumGray}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -167,7 +176,7 @@
                                     </Border>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="SaveBorder" Property="Background" Value="#FF4E4E52"/>
+                                            <Setter TargetName="SaveBorder" Property="Background" Value="{StaticResource Brushes.MediumGray}"/>
                                         </Trigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
@@ -185,7 +194,7 @@
 
                     <TextBlock Grid.Row="0" Text="Log Output:" Style="{StaticResource TextBlock.Description}" Margin="0,0,0,5"/>
 
-                    <Border Grid.Row="1" Background="#FF121212" BorderBrush="#FF3E3E42" BorderThickness="1" CornerRadius="4">
+                    <Border Grid.Row="1" Background="{StaticResource Brushes.PitchBlack}" BorderBrush="{StaticResource Brushes.MediumGray}" BorderThickness="1" CornerRadius="4">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <TextBlock x:Name="ConsoleBlock" FontFamily="Consolas" FontSize="11" Margin="10" TextWrapping="Wrap"/>
                         </ScrollViewer>
@@ -194,4 +203,7 @@
             </Grid>
         </Grid>
     </Border>
+
+
+
 </Window>
