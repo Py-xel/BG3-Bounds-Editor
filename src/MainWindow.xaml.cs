@@ -34,6 +34,7 @@ public partial class MainWindow : Window
     "DiceSet_03",
     "DiceSet_06",
     "Engine",
+    "Game",
     "Gustav",
     "GustavDev",
     "GustavX",
