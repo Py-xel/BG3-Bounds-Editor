@@ -4,7 +4,7 @@
 
 # BG3 Bounds Editor
 
-[![Status](https://img.shields.io/badge/Status-active-0db556)](https://github.com/Py-xel/BG3-Bounds-Editor/releases) [![Divinity Engine](https://img.shields.io/badge/Divinity_Engine-4%2E0-ae9420)](https://en.wikipedia.org/wiki/Divinity_Engine) [![Toolkit](https://img.shields.io/badge/Baldur%27s_Gate_3-Toolkit-blue)](https://store.steampowered.com/app/2956320/Baldurs_Gate_3_Toolkit_Data/)
+[![Status](https://img.shields.io/badge/Status-active-0db556)](https://github.com/Py-xel/BG3-Bounds-Editor/releases) [![Divinity Engine](https://img.shields.io/badge/Divinity_Engine-4%2E0-ae9420)](https://en.wikipedia.org/wiki/Divinity_Engine) [![Toolkit](https://img.shields.io/badge/Baldur%27s_Gate_3-toolkit-blue)](https://store.steampowered.com/app/2956320/Baldurs_Gate_3_Toolkit_Data/)
 
 </div>
 
