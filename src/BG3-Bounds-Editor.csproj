@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>bg3_bounds_editor_logo.ico</ApplicationIcon>
+	  <ApplicationIcon>assets\bg3_bounds_editor_logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -17,15 +17,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="bg3_bounds_editor_logo.ico" />
+    <None Remove="bg3_bounds_editor_logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="assets\bg3_bounds_editor_logo.ico" />
     <Reference Include="LSLib">
       <HintPath>LSLib.dll</HintPath>
     </Reference>
     <Reference Include="LSLibNative">
       <HintPath>LSLibNative.dll</HintPath>
     </Reference>
+    <Resource Include="assets\bg3_bounds_editor_logo.ico" />
+    <Resource Include="assets\bg3_bounds_editor_logo.png" />
     <Resource Include="bg3_bounds_editor_logo.ico" />
-    <Resource Include="bg3_bounds_editor_logo.png" />
   </ItemGroup>
   
 </Project>
